@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Solitaire-React/static/css/main.ce775819.css",
+    "main.js": "/Solitaire-React/static/js/main.38ab5f9c.js",
+    "index.html": "/Solitaire-React/index.html",
+    "main.ce775819.css.map": "/Solitaire-React/static/css/main.ce775819.css.map",
+    "main.38ab5f9c.js.map": "/Solitaire-React/static/js/main.38ab5f9c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ce775819.css",
+    "static/js/main.38ab5f9c.js"
+  ]
+}
