@@ -1,12 +1,12 @@
 //images
 const imgCarte = new Image();
-imgCarte.src   = '/images/Carte.png';
+imgCarte.src = process.env.PUBLIC_URL + '/images/Carte.png';
 
 const imgDosCarte = new Image();
-imgDosCarte.src   = '/images/dosCarte.png';
+imgDosCarte.src = process.env.PUBLIC_URL + '/images/dosCarte.png';
 
 const imgCarteSelect = new Image();
-imgCarteSelect.src   = '/images/CarteSelection.png'
+imgCarteSelect.src = process.env.PUBLIC_URL + '/images/CarteSelection.png'
 
 
 const handleDessinerCartesPilesFin = (plateau) => {
