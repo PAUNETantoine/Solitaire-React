@@ -1,0 +1,38 @@
+.BackGround
+{
+    display: grid;
+    justify-items: center;
+    align-items: start;
+	width: 100%;
+    height: 98vh;
+	border: 2px solid black;
+    background-image: url(/public/images/backGround.jpg);
+}
+
+.Piles
+{
+	border: 1px solid black;
+}
+
+#PilesDiv
+{
+	display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+	border: 2 px solid black;
+}
+
+#ColonnesDiv
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#PiocheDiv
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+}

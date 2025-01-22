@@ -1,0 +1,233 @@
+import handleRechargerPage from "./rechargerPage";
+
+const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) => {
+
+	let indexCarteDep  = plateau.getIndexColonneCarte(carteDep);
+	let indexYCarteDep = plateau.getIndexLigneCarte(carteDep);
+
+	if(location === "FIN-COLONNE")
+	{
+		let indexPileFin = 0;
+		
+		switch(carteDep.getForme())
+		{
+			case "Coeur" : indexPileFin = 3; break;
+
+			case "Pique" : indexPileFin = 2; break;
+
+			case "Carreau" : indexPileFin = 1; break;
+
+			case "Trefle" : indexPileFin = 0; break;
+		}
+
+		if(plateau.tabFin[indexPileFin][0] === undefined && plateau.getCarteColonneSelectionne().getNombre() === 1) //On ne place qu'un AS sur une case vide
+		{
+			plateau.tabFin[indexPileFin].unshift(plateau.tabColonnes[plateau.getIndexColonneCarte(carteDep)].shift());
+			plateau.setCarteColonneSelectionne(null);
+
+			if(plateau.tabColonnes[indexCarteDep][0] !== undefined)
+			{
+				plateau.tabColonnes[indexCarteDep][0].setEstRetournee(true);
+			}
+
+			handleRechargerPage(plateau, jeuLance);
+
+			return;
+
+		}else if(plateau.tabFin[indexPileFin][0] === undefined && plateau.getCarteColonneSelectionne().getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
+		{
+			return;
+		}
+
+		if(plateau.tabFin[indexPileFin][0].getNombre() !== plateau.getCarteColonneSelectionne().getNombre() - 1) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
+		{
+			return;
+		}
+
+		plateau.tabFin[indexPileFin].unshift(plateau.tabColonnes[plateau.getIndexColonneCarte(carteDep)].shift());
+		plateau.setCarteColonneSelectionne(null);
+
+		if(plateau.tabColonnes[indexCarteDep][0] !== undefined)
+		{
+			plateau.tabColonnes[indexCarteDep][0].setEstRetournee(true);
+		}
+
+		handleRechargerPage(plateau, jeuLance);
+
+
+		return;
+	}
+
+	if(location === "FIN-PIOCHE")
+	{
+		let indexPileFin = 0;
+
+		switch(carteDep.getForme())
+		{
+			case "Coeur" : indexPileFin = 3; break;
+
+			case "Pique" : indexPileFin = 2; break;
+
+			case "Carreau" : indexPileFin = 1; break;
+
+			case "Trefle" : indexPileFin = 0; break;
+		}
+
+
+		if(plateau.tabFin[indexPileFin][0] === undefined && plateau.getCartePiocheSelectionne().getNombre() === 1) //On ne place qu'un AS sur une case vide
+		{
+			plateau.tabFin[indexPileFin].unshift(carteDep);
+
+			plateau.tabFin[indexPileFin][0].setEstRetournee(true);
+			plateau.setCartePiocheSelectionne(null); 
+			plateau.setCartePiocheEstSelectionne(false);
+
+			handleRechargerPage(plateau, jeuLance);
+
+			return;
+
+		}else if(plateau.tabFin[indexPileFin][0] === undefined && plateau.getCartePiocheSelectionne().getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
+		{
+			return;
+		}
+
+		if(plateau.tabFin[indexPileFin][0].getNombre() !== plateau.getCartePiocheSelectionne().getNombre() - 1) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
+		{
+			return;
+		}
+
+
+		plateau.tabFin[indexPileFin].unshift(carteDep); 
+		plateau.tabFin[indexPileFin][0].setEstRetournee(true);
+		plateau.setCartePiocheSelectionne(null); 
+		plateau.setCartePiocheEstSelectionne(false);
+
+		handleRechargerPage(plateau, jeuLance);
+
+		return;
+	}
+	
+	
+
+	if(carteArr >= 0) //Si case où placement libre authorisé
+	{
+		if(carteDep !== null && carteDep !== undefined && carteDep.getNombre() !== 13) //Seulement les rois peuvent être sur les cases vides
+		{
+			return;
+		}
+
+		if(location === "PIOCHE")
+		{
+			plateau.tabColonnes[carteArr].unshift(plateau.getCartePiocheSelectionne());
+			plateau.setCartePiocheSelectionne(null);
+			plateau.setCartePiocheEstSelectionne(false);
+			plateau.tabColonnes[carteArr][0].setEstRetournee(true);
+
+			handleRechargerPage(plateau, jeuLance);
+
+			return;
+		}
+
+		if(location === "FINversCOLONNES")
+		{
+			plateau.tabColonnes[carteArr].unshift(plateau.tabFin[plateau.getIndexFinCarte(carteDep)].shift());
+			plateau.setCarteFinSelectionne(null);
+
+			handleRechargerPage(plateau, jeuLance);
+
+			return;
+		}
+
+		if(plateau.tabColonnes[indexCarteDep] === undefined)
+		{
+			return;
+		}
+
+		const tmpElemts = plateau.tabColonnes[indexCarteDep].splice(0,indexYCarteDep+1);
+
+		let i = tmpElemts.length-1;
+
+		do {
+			plateau.tabColonnes[carteArr].unshift(tmpElemts[i]);
+
+			i--;
+
+		}while(i >= 0);
+
+		if(plateau.tabColonnes[indexCarteDep][0] !== undefined)
+		{
+			plateau.tabColonnes[indexCarteDep][0].setEstRetournee(true);
+		}
+
+		plateau.setCarteColonneSelectionne(null);
+		return;
+	}
+
+	let indexCarteArr = plateau.getIndexColonneCarte(carteArr);
+
+
+	if(carteDep.getNombre() !== 1 && carteArr === undefined && location === "FIN") //Si c'est pas un AS et qu'on le pose sur la case vide de la pile
+	{
+		return;
+	}
+
+
+
+	if(carteDep.getCouleur() === carteArr.getCouleur())
+	{
+		return;
+	}
+
+	if(carteDep.getNombre() !== carteArr.getNombre() - 1)
+	{
+		return;
+	}
+
+
+	if(location === "COLONNES")
+	{
+		const tmpElemts = plateau.tabColonnes[indexCarteDep].splice(0,indexYCarteDep+1);
+
+		let i = tmpElemts.length-1;
+
+		do {
+			plateau.tabColonnes[indexCarteArr].unshift(tmpElemts[i])
+
+			i--;
+
+		}while(i >= 0);
+	}
+
+
+	if(location === "PIOCHE")
+	{
+		plateau.tabColonnes[indexCarteArr].unshift(plateau.getCartePiocheSelectionne())
+		plateau.tabColonnes[indexCarteArr][0].setEstRetournee(true);
+		plateau.setCartePiocheEstSelectionne(false);
+		plateau.setCartePiocheSelectionne(null);
+
+		handleRechargerPage(plateau, jeuLance);
+		return;
+	}
+
+	if(location === "FINversCOLONNES")
+	{
+		plateau.tabColonnes[indexCarteArr].unshift(plateau.tabFin[plateau.getIndexFinCarte(carteDep)].shift())
+		plateau.setCarteFinSelectionne(null);
+
+		handleRechargerPage(plateau, jeuLance);
+		return;
+	}
+
+
+	if(plateau.tabColonnes[indexCarteDep][0] !== undefined)
+	{
+		plateau.tabColonnes[indexCarteDep][0].setEstRetournee(true);
+	}
+
+	plateau.setCarteColonneSelectionne(null);
+
+	handleRechargerPage(plateau, jeuLance);
+}
+
+export default handleDeplacerCarte;
