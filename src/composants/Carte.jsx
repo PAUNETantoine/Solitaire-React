@@ -15,10 +15,10 @@ class Carte{
 
         switch(this.forme)
         {
-            case "Trefle" : this.couleur = "black"; this.imgSymbole.src = '/images/Trefle.png'; break;
-            case "Pique"  : this.couleur = "black"; this.imgSymbole.src = '/images/Pique.png';  break;
-            case "Coeur"  : this.couleur = "red"  ; this.imgSymbole.src = '/images/Coeur.png';  break;
-            case "Carreau": this.couleur = "red"  ; this.imgSymbole.src = '/images/Carreau.png';break;
+            case "Trefle" : this.couleur = "black"; this.imgSymbole.src = process.env.PUBLIC_URL + '/images/Trefle.png'; break;
+            case "Pique"  : this.couleur = "black"; this.imgSymbole.src = process.env.PUBLIC_URL + '/images/Pique.png';  break;
+            case "Coeur"  : this.couleur = "red"  ; this.imgSymbole.src = process.env.PUBLIC_URL + '/images/Coeur.png';  break;
+            case "Carreau": this.couleur = "red"  ; this.imgSymbole.src = process.env.PUBLIC_URL + '/images/Carreau.png';break;
         }
 
     }
