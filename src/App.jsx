@@ -75,7 +75,6 @@ function App()
             plateau.setCarteFinSelectionne(plateau.tabFin[Math.floor(x/130)][0])
             plateau.setCarteColonneSelectionne(null);
             plateau.setCartePiocheEstSelectionne(false);
-            plateau.setCartePiocheSelectionne(null);
 
             handleRechargerPage(plateau, jeuLance);
         };
@@ -215,14 +214,16 @@ function App()
             if(x > (canvaFrame.width / 2 - 235) && x < (canvaFrame.width / 2 + 235) && y > 0 && y < 200) //Si on clic sur les piles
             {
                 handlePilesClick((x-(canvaFrame.width / 2 - 235)), y);
+                return;
             }
 
             if(x > (canvaFrame.width / 2 - 450) && x < (canvaFrame.width / 2 + 450) && y > 250 && y < 850) //Si on clic sur les colonnes
             {
                 handleColonnesClick((x-(canvaFrame.width / 2 - 450)), y - 250);
+                return;
             }
 
-            if(x > (canvaFrame.width - 250) && x < (canvaFrame.width) && y > 0 && y < 200)
+            if(x > (canvaFrame.width - 250) && x < (canvaFrame.width) && y > 0 && y < 200) //Si on clic sur la pioche
             {
                 handlePiocheClick((x-(canvaFrame.width - 250)), y);
             }
@@ -256,7 +257,7 @@ function App()
                     plateau.getCartePiocheSelectionne().setEstMouvement(true);
                     plateau.getCartePiocheSelectionne().setX(x - 60)
                     plateau.getCartePiocheSelectionne().setY(y - 100)                
-                }else if(plateau.getCarteFinSelectionne() !== null)
+                }else if(plateau.getCarteFinSelectionne() !== null && plateau.getCarteFinSelectionne() !== undefined)
                 {
                     plateau.getCarteFinSelectionne().setEstMouvement(true);
                     plateau.getCarteFinSelectionne().setX(x - 60)
@@ -312,6 +313,7 @@ function App()
             }
 
             checkEstMouvement(); //enlève est mouvement
+            
 
             plateau.setCarteColonneSelectionne(null);
             plateau.setCarteFinSelectionne(null);
@@ -370,19 +372,44 @@ function App()
 
     const handleClicDroit = (event) => {
         event.preventDefault();
+        const x = event.clientX;
+        const y = event.clientY;
+
+        const canvaFrame = document.getElementById("canvaFrame");
 
         if(plateau.getCarteColonneSelectionne() !== null && plateau.getIndexLigneCarte(plateau.getCarteColonneSelectionne()) !== 0)
         {
             return;
         }
     
-        if(plateau.getCarteColonneSelectionne() !== null && plateau.getCarteColonneSelectionne() !== undefined)
+        if(x > (canvaFrame.width / 2 - 450) && x < (canvaFrame.width / 2 + 450) && y > 250 && y < 850)
         {
+            let indexX = Math.floor((x - (canvaFrame.width / 2 - 450))/130);
+            let indexY = Math.floor((y - 250)/30);
+
+            indexY = plateau.tabColonnes[indexX].length-1 - indexY;
+
+            if(indexY < 0)
+            {
+                indexY = 0;
+            }
+
+            plateau.setCarteColonneSelectionne(plateau.tabColonnes[indexX][indexY]);
+
+            if(plateau.getCarteColonneSelectionne === null)
+            {
+                return;
+            }
+
             handleDeplacerCarte(plateau.getCarteColonneSelectionne(), null, "FIN-COLONNE", plateau, jeuLance); //Transfert de colonnes vers FIN
-        }else if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheEstSelectionne() !== undefined && plateau.getCartePiocheEstSelectionne())
+
+            plateau.setCarteColonneSelectionne(null);
+
+        }else if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && x > (canvaFrame.width - 250) && x < (canvaFrame.width - 130) && y > 0 && y < 200)
         {
             handleDeplacerCarte(plateau.getCartePiocheSelectionne(), null, "FIN-PIOCHE", plateau, jeuLance); //Transfert de pioche vers FIN
         }else{
+            console.log("ok 2")
             return;
         }
       };
