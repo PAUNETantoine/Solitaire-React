@@ -1,3 +1,11 @@
+/*
+@author : Antoine PAUNET
+Version : 0.6 Beta
+Date    : 24/01/25
+--------------------
+File : main file
+*/
+
 import { Plateau } from "./composants/Plateau"
 import React, { useEffect, useState } from "react";
 import "./styles/style.css";
@@ -5,32 +13,12 @@ import handleRechargerPage from "./scripts/rechargerPage";
 import handleDeplacerCarte from "./scripts/deplacerCarte";
 
 
-/*Ce composant contient tous les autre composants dans app et permet de dispatcher correcter les différents éléments*/
-function PilesVictoire()
-{
-    return(
-        <div id="PilesDiv">
-            <canvas id="Piles" className="Piles" width="510" height="200"/>
-        </div>
-    )
-}
-
-
-
-function Colonnes({handleClicDroit})
+/*Ce composant contient tous le canva dans app et permet de dispatcher correctement les différents éléments*/
+function CanvaFrame({handleClicDroit})
 {
     return (
-        <div id ="ColonnesDiv" onContextMenu={handleClicDroit}>
-            <canvas className="Piles" id="Colonnes" width="900" height="600"/>
-        </div>
-    )
-}
-
-function Pioche({handleClicDroit})
-{
-    return (
-        <div id="PiocheDiv" onContextMenu={handleClicDroit}>
-            <canvas className="Piles" id="Pioche" width="250" height="200"/>
+        <div onContextMenu={handleClicDroit}>
+             <canvas className="Piles" id="canvaFrame" width={window.innerWidth - 20} height={window.innerHeight - 50}/>
         </div>
     )
 }
@@ -40,8 +28,8 @@ function Pioche({handleClicDroit})
 function App()
 {
     //Les états
-    const [plateau,          setPlateau         ] = useState(null);
-    const [jeuLance,         setJeuLance        ] = useState(false);
+    const [plateau,  setPlateau ] = useState(null);
+    const [jeuLance, setJeuLance] = useState(false);
 
 
 
@@ -58,15 +46,11 @@ function App()
 
         if (!plateau) return;
 
-        const pilesCanvas = document.getElementById("Piles");
-        const colonnesCanvas = document.getElementById("Colonnes");
-        const piocheCanvas = document.getElementById("Pioche");
+        const canvaFrame = document.getElementById("canvaFrame");
+ 
 
 
-        const handlePilesClick = (event) => {
-            const rect = pilesCanvas.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
+        const handlePilesClick = (x, y) => {
 
 
             if(plateau.getCarteColonneSelectionne() !== null)
@@ -98,12 +82,8 @@ function App()
 
 
 
-        const handleColonnesClick = (event) => {
-            const rect = colonnesCanvas.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
+        const handleColonnesClick = (x, y) => {
 
-            
             let indexX = Math.floor(x/130);
             let indexY = Math.floor(y/30);
 
@@ -192,10 +172,7 @@ function App()
 
 
 
-        const handlePiocheClick = (event) => {
-            const rect = piocheCanvas.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-
+        const handlePiocheClick = (x, y) => {
 
             if(x > 130)
             {
@@ -205,6 +182,9 @@ function App()
                 }
 
                 plateau.setCartePiocheSelectionne(plateau.cartes.pop());
+
+                plateau.getCartePiocheSelectionne().setX((canvaFrame.width - 250));
+                plateau.getCartePiocheSelectionne().setY(0);
 
                 plateau.setCartePiocheEstSelectionne(false);
 
@@ -225,17 +205,150 @@ function App()
         };
 
 
+        canvaFrame.addEventListener("mousedown", (event) => {
+            const x = event.offsetX;
+            const y = event.offsetY;
 
-        pilesCanvas.addEventListener("click", handlePilesClick);
-        colonnesCanvas.addEventListener("click", handleColonnesClick);
-        piocheCanvas.addEventListener("click", handlePiocheClick);
+            plateau.sourisClic = true;
 
-        return () => {
-            pilesCanvas.removeEventListener("click", handlePilesClick);
-            colonnesCanvas.removeEventListener("click", handleColonnesClick);
-            piocheCanvas.removeEventListener("click", handlePiocheClick);
-        };
+            
+            if(x > (canvaFrame.width / 2 - 235) && x < (canvaFrame.width / 2 + 235) && y > 0 && y < 200) //Si on clic sur les piles
+            {
+                handlePilesClick((x-(canvaFrame.width / 2 - 235)), y);
+            }
+
+            if(x > (canvaFrame.width / 2 - 450) && x < (canvaFrame.width / 2 + 450) && y > 250 && y < 850) //Si on clic sur les colonnes
+            {
+                handleColonnesClick((x-(canvaFrame.width / 2 - 450)), y - 250);
+            }
+
+            if(x > (canvaFrame.width - 250) && x < (canvaFrame.width) && y > 0 && y < 200)
+            {
+                handlePiocheClick((x-(canvaFrame.width - 250)), y);
+            }
+        });
+
+
+        canvaFrame.addEventListener("mousemove", (event) => {
+            const rect = canvaFrame.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            if(plateau.sourisClic)
+            {
+                if(plateau.getCarteColonneSelectionne() !== null)
+                {
+                    if(plateau.getIndexLigneCarte(plateau.getCarteColonneSelectionne()) !== 0)
+                    {
+                        for(let i = plateau.getIndexLigneCarte(plateau.getCarteColonneSelectionne()) ; i >= 0 ; i--)
+                        {
+                            plateau.tabColonnes[plateau.getIndexColonneCarte(plateau.getCarteColonneSelectionne())][i].setX(x - 60);
+                            plateau.tabColonnes[plateau.getIndexColonneCarte(plateau.getCarteColonneSelectionne())][i].setY((y - 100) - (i*30));
+                            plateau.tabColonnes[plateau.getIndexColonneCarte(plateau.getCarteColonneSelectionne())][i].setEstMouvement(true);
+                        }
+                    }else{
+                        plateau.getCarteColonneSelectionne().setEstMouvement(true);
+                        plateau.getCarteColonneSelectionne().setX(x - 60)
+                        plateau.getCarteColonneSelectionne().setY(y - 100)
+                    }
+                }else if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheEstSelectionne())
+                {
+                    plateau.getCartePiocheSelectionne().setEstMouvement(true);
+                    plateau.getCartePiocheSelectionne().setX(x - 60)
+                    plateau.getCartePiocheSelectionne().setY(y - 100)                
+                }else if(plateau.getCarteFinSelectionne() !== null)
+                {
+                    plateau.getCarteFinSelectionne().setEstMouvement(true);
+                    plateau.getCarteFinSelectionne().setX(x - 60)
+                    plateau.getCarteFinSelectionne().setY(y - 100)       
+                }
+            }else{
+                return;
+            }
+
+            let ctx = canvaFrame.getContext("2d");
+
+            ctx.clearRect(0, 0, canvaFrame.width, canvaFrame.height);
+
+            handleRechargerPage(plateau, jeuLance);
+        });
+        
+        // Écouteur pour `mouseup`
+        canvaFrame.addEventListener("mouseup", (event) => {
+            const x = event.offsetX;
+            const y = event.offsetY;
+
+            plateau.sourisClic = false;
+
+            
+
+            //Vérifications
+
+            if(x > (canvaFrame.width / 2 - 235) && x < (canvaFrame.width / 2 + 235) && y > 0 && y < 200) //Si on clic sur les piles
+            {
+                handlePilesClick((x-(canvaFrame.width / 2 - 235)), y);
+            }
+
+            if(x > (canvaFrame.width / 2 - 450) && x < (canvaFrame.width / 2 + 450) && y > 250 && y < 850) //Si on clic sur les colonnes
+            {
+                handleColonnesClick((x-(canvaFrame.width / 2 - 450)), y - 250);
+            }
+
+            if(x > (canvaFrame.width - 250) && x < (canvaFrame.width - 130) && y > 0 && y < 200)//si on clic sur la carte à selectionner de la pioche
+            {
+                handlePiocheClick((x-(canvaFrame.width - 250)), y);
+            }
+
+
+            if(plateau.getCarteColonneSelectionne() !== null)
+            {
+                plateau.getCarteColonneSelectionne().setEstMouvement(false);
+            }else if(plateau.getCartePiocheEstSelectionne())
+            {
+                plateau.getCartePiocheSelectionne().setEstMouvement(false);
+            }else if(plateau.getCarteFinSelectionne())
+            {
+                plateau.getCarteFinSelectionne().setEstMouvement(false);
+            }
+
+            checkEstMouvement(); //enlève est mouvement
+
+            plateau.setCarteColonneSelectionne(null);
+            plateau.setCarteFinSelectionne(null);
+            plateau.setCartePiocheEstSelectionne(false);
+
+
+            let ctx = canvaFrame.getContext("2d");
+
+            ctx.clearRect(0, 0, canvaFrame.width, canvaFrame.height);
+
+            handleRechargerPage(plateau, jeuLance);
+        });
+
+      
     }, [plateau]);
+
+
+    const checkEstMouvement = () => {
+        for(let i = 0 ; i < plateau.tabColonnes.length ; i++)
+        {
+            for(let j = 0 ; j < plateau.tabColonnes[i].length; j++)
+            {
+                if(plateau.tabColonnes[i][j].getEstMouvement())
+                {
+                    plateau.tabColonnes[i][j].setEstMouvement(false);
+                }
+            }
+        }
+
+        for(let i = 0 ; i < plateau.cartes.length ; i++)
+        {
+            if(plateau.cartes[i].getEstMouvement())
+            {
+                plateau.cartes[i].setEstMouvement(false);
+            }
+        }
+    }
 
 
     const handleGameStart = () => {
@@ -278,9 +391,7 @@ function App()
     //Le rendu
     return (
         <div className="BackGround">
-            <PilesVictoire></PilesVictoire>
-            <Colonnes handleClicDroit={handleClicDroit}></Colonnes>
-            <Pioche handleClicDroit={handleClicDroit}></Pioche>
+            <CanvaFrame handleClicDroit={handleClicDroit}></CanvaFrame>
             <button onClick={handleGameStart}>Lancer le jeu</button>
 
         </div>

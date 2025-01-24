@@ -1,4 +1,10 @@
-import React, {Component} from 'react';
+/*
+@author : Antoine PAUNET
+Version : 0.6 Beta
+Date    : 24/01/25
+--------------------
+File : Class carte
+*/
 
 class Carte{
 
@@ -20,6 +26,8 @@ class Carte{
             case "Coeur"  : this.couleur = "red"  ; this.imgSymbole.src = process.env.PUBLIC_URL + '/images/Coeur.png';  break;
             case "Carreau": this.couleur = "red"  ; this.imgSymbole.src = process.env.PUBLIC_URL + '/images/Carreau.png';break;
         }
+
+        this.estMouvement  = false; //Si jamais on déplace la carte elle devient true ( permet de passer les cartes au dessus dans le dessin de la frame )
 
     }
 
@@ -72,6 +80,16 @@ class Carte{
     getCouleur()
     {
         return this.couleur;
+    }
+
+    getEstMouvement()
+    {
+        return this.estMouvement;
+    }
+
+    setEstMouvement(bool)
+    {
+        this.estMouvement = bool;
     }
 
 }

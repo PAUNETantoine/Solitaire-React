@@ -1,3 +1,11 @@
+/*
+@author : Antoine PAUNET
+Version : 0.6 Beta
+Date    : 24/01/25
+--------------------
+File : main file
+*/
+
 .BackGround
 {
     display: grid;
@@ -11,28 +19,10 @@
 
 .Piles
 {
-	border: 1px solid black;
 }
 
-#PilesDiv
+#canvaFrame
 {
-	display: flex;
-    justify-content: flex-start;
-    gap: 10px;
-	border: 2 px solid black;
-}
-
-#ColonnesDiv
-{
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-#PiocheDiv
-{
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 10px;
+    display: block;
+    box-sizing: border-box;
 }

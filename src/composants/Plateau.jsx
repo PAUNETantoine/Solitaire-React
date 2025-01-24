@@ -1,3 +1,11 @@
+/*
+@author : Antoine PAUNET
+Version : 0.6 Beta
+Date    : 24/01/25
+--------------------
+File : Class plateau
+*/
+
 import Carte from "./Carte"
 
 class Plateau 
@@ -12,6 +20,8 @@ class Plateau
         this.carteColonnesSelectionne   = null;
         this.carteFinSelectionne        = null;
         this.cartePiocheEstSelectionne  = false;
+
+        this.sourisClic = false;
     }
 
     /*Méthode permettant d'initialiser les cartes du deck*/

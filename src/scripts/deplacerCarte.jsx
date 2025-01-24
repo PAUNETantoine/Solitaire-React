@@ -1,9 +1,20 @@
+/*
+@author : Antoine PAUNET
+Version : 0.6 Beta
+Date    : 24/01/25
+--------------------
+File : deplacerCartes
+*/
+
+
 import handleRechargerPage from "./rechargerPage";
 
 const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) => {
 
 	let indexCarteDep  = plateau.getIndexColonneCarte(carteDep);
 	let indexYCarteDep = plateau.getIndexLigneCarte(carteDep);
+
+	carteDep.setEstMouvement(false);
 
 	if(location === "FIN-COLONNE")
 	{
@@ -54,7 +65,6 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 
 		handleRechargerPage(plateau, jeuLance);
 
-
 		return;
 	}
 
@@ -99,7 +109,9 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 
 		plateau.tabFin[indexPileFin].unshift(carteDep); 
 		plateau.tabFin[indexPileFin][0].setEstRetournee(true);
-		plateau.setCartePiocheSelectionne(null); 
+
+		plateau.setCartePiocheSelectionne(plateau.cartes.pop());
+
 		plateau.setCartePiocheEstSelectionne(false);
 
 		handleRechargerPage(plateau, jeuLance);
@@ -119,7 +131,7 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 		if(location === "PIOCHE")
 		{
 			plateau.tabColonnes[carteArr].unshift(plateau.getCartePiocheSelectionne());
-			plateau.setCartePiocheSelectionne(null);
+			plateau.setCartePiocheSelectionne(plateau.cartes.pop());
 			plateau.setCartePiocheEstSelectionne(false);
 			plateau.tabColonnes[carteArr][0].setEstRetournee(true);
 
@@ -203,8 +215,8 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 	{
 		plateau.tabColonnes[indexCarteArr].unshift(plateau.getCartePiocheSelectionne())
 		plateau.tabColonnes[indexCarteArr][0].setEstRetournee(true);
+		plateau.setCartePiocheSelectionne(plateau.cartes.pop());
 		plateau.setCartePiocheEstSelectionne(false);
-		plateau.setCartePiocheSelectionne(null);
 
 		handleRechargerPage(plateau, jeuLance);
 		return;

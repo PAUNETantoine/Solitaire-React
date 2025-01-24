@@ -1,3 +1,12 @@
+/*
+@author : Antoine PAUNET
+Version : 0.6 Beta
+Date    : 24/01/25
+--------------------
+File : dessinerCartes
+*/
+
+
 //images
 const imgCarte = new Image();
 imgCarte.src = process.env.PUBLIC_URL + '/images/Carte.png';
@@ -9,57 +18,69 @@ const imgCarteSelect = new Image();
 imgCarteSelect.src = process.env.PUBLIC_URL + '/images/CarteSelection.png'
 
 
-const handleDessinerCartesPilesFin = (plateau) => {
 
-	//Initialisation du canva
-	let canva = document.getElementById("Piles");
+const handleDessinerCartesPilesFin = (plateau) => {
+	let canva = document.getElementById("canvaFrame");
 	let ctx = canva.getContext("2d");
 	ctx.font = '25px Arial';
+
+
+	const xDebutPiles = canva.width / 2 - 235; //On place la pile en haut au mileu
 
 	for(let i = 0 ; i < 4 ; i++)
 	{
 		if(plateau.tabFin[i][0] !== undefined)
 		{
+			if(!plateau.sourisClic)
+			{
+				plateau.tabFin[i][0].setX(xDebutPiles + (i*130));
+				plateau.tabFin[i][0].setY(0);
+			}
 			if(plateau.tabFin[i][0].getEstRetournee())
 			{
 				if(plateau.getCarteFinSelectionne() === plateau.tabFin[i][0])
 				{
-					ctx.drawImage(imgCarteSelect, (i*120) + (i*10), 0, 120, 200);
+					ctx.drawImage(imgCarteSelect, plateau.tabFin[i][0].getX(), plateau.tabFin[i][0].getY(), 120, 200);
 				}
 				else{
-					ctx.drawImage(imgCarte, (i*120) + (i*10), 0, 120, 200);
+					ctx.drawImage(imgCarte, plateau.tabFin[i][0].getX(), plateau.tabFin[i][0].getY(), 120, 200);
 				}
 
 
-				ctx.drawImage(plateau.tabFin[i][0].imgSymbole,(i*130) + 18, 75, 92, 49);
+				ctx.drawImage(plateau.tabFin[i][0].imgSymbole, plateau.tabFin[i][0].getX() + 18, plateau.tabFin[i][0].getY() + 75, 92, 49);
 
 				ctx.fillStyle = plateau.tabFin[i][0].couleur;
-				ctx.fillText(plateau.tabFin[i][0].getNom(), (i*130) + 5, 25);
+
+				ctx.fillText(plateau.tabFin[i][0].getNom(), plateau.tabFin[i][0].getX() + 5, plateau.tabFin[i][0].getY() + 25);
 
 				if(plateau.tabFin[i][0].getNombre() !== 10)
 				{
-					ctx.fillText(plateau.tabFin[i][0].getNom(), (i*130) + 100, 195);
+					ctx.fillText(plateau.tabFin[i][0].getNom(), plateau.tabFin[i][0].getX() + 100, plateau.tabFin[i][0].getY() + 195);
 				}else{
-					ctx.fillText(plateau.tabFin[i][0].getNom(), (i*130) + 90, 195);
+					ctx.fillText(plateau.tabFin[i][0].getNom(), plateau.tabFin[i][0].getX() + 90, plateau.tabFin[i][0].getY() + 195);
 				}
 			}else
 			{
-				ctx.drawImage(imgDosCarte, (i*120) + (i*10), 0, 120, 200);
+				ctx.drawImage(imgDosCarte, plateau.tabFin[i][0].getX(), plateau.tabFin[i][0].getY(), 120, 200);
 			}
 
-		}else{
-			ctx.drawImage(imgCarte, (i*120) + (i*10), 0, 120, 200);
+		}else if(plateau.tabFin[i][0] === undefined || plateau.tabFin[i][0].getEstMouvement())
+		{
+			ctx.drawImage(imgCarte, xDebutPiles + (i*130), 0, 120, 200);
 		}
 	}
 }
 
-const handleDessinerCarteColonnes = (plateau, jeuLance) => {
-	//Initialisation du canva
-	let canva = document.getElementById("Colonnes");
+const handleDessinerCarteColonnes = (plateau, jeuLance) => {	
+	let canva = document.getElementById("canvaFrame");
 	let ctx = canva.getContext("2d");
 	ctx.font = '25px Arial';
 
-	ctx.clearRect(0, 0, canva.width, canva.height)
+	const xDebutColonnes = canva.width / 2 - 450; //On place la pile au centre
+	const yDebutColonnes = 250;
+
+
+	ctx.clearRect(xDebutColonnes, yDebutColonnes, canva.width/2 + 450, canva.height)
 
 
 	for(let i = 0 ; i < plateau.tabColonnes.length ; i++)
@@ -67,112 +88,122 @@ const handleDessinerCarteColonnes = (plateau, jeuLance) => {
 		for(let j = plateau.tabColonnes[i].length ; j > -1 ; j--)
 		{
 
-			if(plateau.tabColonnes[i][j] != undefined)
+			if(plateau.tabColonnes[i][j] !== undefined)
 			{
-				if(!jeuLance)
+				if(!jeuLance && !plateau.sourisClic)
 				{
-					plateau.tabColonnes[i][j].setX((i*120) + (i*10));
-					plateau.tabColonnes[i][j].setY((plateau.tabColonnes[i].length-1-j)*30);
+					plateau.tabColonnes[i][j].setX(xDebutColonnes + (i*130));
+					plateau.tabColonnes[i][j].setY(yDebutColonnes + (plateau.tabColonnes[i].length-1-j)*30);
 				}
 
-				if(plateau.tabColonnes[i][j].getEstRetournee())
+				if(plateau.tabColonnes[i][j].getEstRetournee() && !plateau.tabColonnes[i][j].getEstMouvement())
 				{
-					if(plateau.tabColonnes[i][j] === plateau.getCarteColonneSelectionne())
-					{
-						ctx.drawImage(imgCarteSelect, plateau.tabColonnes[i][j].getX(), plateau.tabColonnes[i][j].getY(), 120, 200);
-					}else
-					{
-						ctx.drawImage(imgCarte,plateau.tabColonnes[i][j].getX(), plateau.tabColonnes[i][j].getY(), 120, 200);
-					}
-					
-					ctx.drawImage(plateau.tabColonnes[i][j].imgSymbole,(i*130) + 18, 75 + ((plateau.tabColonnes[i].length-1-j)*30), 92, 49);
-				
-
-					if(plateau.tabColonnes[i][j] !== undefined)
-					{
-						ctx.fillStyle = plateau.tabColonnes[i][j].couleur;
-						ctx.fillText(plateau.tabColonnes[i][j].getNom(), (i*130) + 5, 25 + ((plateau.tabColonnes[i].length-1-j)*30));
-	
-						if(plateau.tabColonnes[i][j].getNombre() !== 10)
-						{
-							ctx.fillText(plateau.tabColonnes[i][j].getNom(), (i*130) + 100, 195 + ((plateau.tabColonnes[i].length-1-j)*30));
-						}else{
-							ctx.fillText(plateau.tabColonnes[i][j].getNom(), (i*130) + 90, 195 + ((plateau.tabColonnes[i].length-1-j)*30));
-						}
-					}
-				}else
+					dessinerUneCarte(plateau.tabColonnes[i][j], plateau, ctx);
+				}
+				else
 				{
 					ctx.drawImage(imgDosCarte, plateau.tabColonnes[i][j].getX(), plateau.tabColonnes[i][j].getY(), 120, 200);
 				}
+			}else{
+				ctx.drawImage(imgCarte, xDebutColonnes + (i*120) + (i*10), yDebutColonnes + (plateau.tabColonnes[i].length-j)*30, 120, 200);
+			}
+		}
+
+	}
+	
+	for(let i = 0 ; i < plateau.tabColonnes.length ; i++)
+	{
+		for(let j = plateau.tabColonnes[i].length ; j > -1 ; j--)
+		{
+			if(plateau.tabColonnes[i][j] !== undefined && plateau.tabColonnes[i][j].getEstMouvement())
+			{
+				dessinerUneCarte(plateau.tabColonnes[i][j], plateau, ctx)
 			}
 		}
 	}
 }
 
 
+
+
 const handleDessinerCartesPioche = (plateau) => {
-	//Initialisation du canva
-	let canva = document.getElementById("Pioche");
+	let canva = document.getElementById("canvaFrame");
 	let ctx = canva.getContext("2d");
 	ctx.font = '25px Arial';
+	
+
+	const xDebutPioche = canva.width - 250; //On place la pile au centre
+	
 
 	if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined)
 	{
+		if(!plateau.sourisClic)
+		{
+			plateau.getCartePiocheSelectionne().setX(xDebutPioche);
+			plateau.getCartePiocheSelectionne().setY(0);
+		}
 
 		if(plateau.getCartePiocheEstSelectionne())
 		{
-			ctx.drawImage(imgCarteSelect, 0, 0, 120, 200);
+			ctx.drawImage(imgCarteSelect, plateau.getCartePiocheSelectionne().getX(),  plateau.getCartePiocheSelectionne().getY(), 120, 200);
 		}else
 		{
-			ctx.drawImage(imgCarte, 0, 0, 120, 200);
+			ctx.drawImage(imgCarte, plateau.getCartePiocheSelectionne().getX(), plateau.getCartePiocheSelectionne().getY(), 120, 200);
 		}
 
-		ctx.drawImage(plateau.getCartePiocheSelectionne().imgSymbole, 18, 75, 92, 49);
+		ctx.drawImage(plateau.getCartePiocheSelectionne().imgSymbole, plateau.getCartePiocheSelectionne().getX() + 18, plateau.getCartePiocheSelectionne().getY() + 75, 92, 49);
 		ctx.fillStyle = plateau.getCartePiocheSelectionne().couleur;
-		ctx.fillText(plateau.getCartePiocheSelectionne().getNom(), 5, 25);
-
-
+		ctx.fillText(plateau.getCartePiocheSelectionne().getNom(), plateau.getCartePiocheSelectionne().getX() + 5, plateau.getCartePiocheSelectionne().getY() + 25);
+		
+		
 		if(plateau.getCartePiocheSelectionne().getNombre() !== 10)
 		{
-			ctx.fillText(plateau.getCartePiocheSelectionne().getNom(), 100, 195);
+			ctx.fillText(plateau.getCartePiocheSelectionne().getNom(), plateau.getCartePiocheSelectionne().getX() + 100, plateau.getCartePiocheSelectionne().getY() + 195);
 		}else{
-			ctx.fillText(plateau.getCartePiocheSelectionne().getNom(), 90, 195);
+			ctx.fillText(plateau.getCartePiocheSelectionne().getNom(), plateau.getCartePiocheSelectionne().getX() + 90, plateau.getCartePiocheSelectionne().getY() + 195);
 		}
 	}else{
-		ctx.clearRect(0, 0, canva.width, canva.height); //Sinon on enlève l'affichage de la carte
+		ctx.clearRect(xDebutPioche, 0, canva.width, 200); //Sinon on enlève l'affichage de la carte
 	}
 
 	if(plateau.cartes.length === 0)
 	{
 		return;
 	}
-
+		
 	if(plateau.cartes[plateau.cartes.length-1] === undefined)
 	{
 		return;
 	}
 
-	
-	if(plateau.cartes[plateau.cartes.length-1].getEstRetournee())
-	{
-		ctx.drawImage(imgCarte, 130, 0, 120, 200);
-		ctx.drawImage(plateau.cartes[plateau.cartes.length-1].imgSymbole, 148, 75, 92, 49);
-		ctx.fillStyle = plateau.cartes[plateau.cartes.length-1].couleur;
-		ctx.fillText(plateau.cartes[plateau.cartes.length-1].getNom(), 135, 25);
 
-
-		if(plateau.cartes[plateau.cartes.length-1].getNombre() !== 10)
-		{
-			ctx.fillText(plateau.cartes[plateau.cartes.length-1].getNom(), 150, 195);
-		}else{
-			ctx.fillText(plateau.cartes[plateau.cartes.length-1].getNom(), 210, 195);
-		}
-
-	}else
-	{
-		ctx.drawImage(imgDosCarte, 130, 0, 120, 200);
-	}
+	ctx.drawImage(imgDosCarte, xDebutPioche + 130, 0, 120, 200);
 }
 
+const dessinerUneCarte = (carte, plateau, ctx) => {
+	if(carte === plateau.getCarteColonneSelectionne())
+	{
+		ctx.drawImage(imgCarteSelect, carte.getX(), carte.getY(), 120, 200);
+	}else
+	{
+		ctx.drawImage(imgCarte, carte.getX(), carte.getY(), 120, 200);
+	}
+
+	ctx.drawImage(carte.imgSymbole, carte.getX() + 18, carte.getY() + 75, 92, 49);
+
+
+	if(carte !== undefined)
+	{
+		ctx.fillStyle = carte.couleur;
+		ctx.fillText(carte.getNom(), carte.getX() + 5,carte.getY() + 25);
+
+		if(carte.getNombre() !== 10)
+		{
+			ctx.fillText(carte.getNom(),carte.getX() + 100, carte.getY() + 195);
+		}else{
+			ctx.fillText(carte.getNom(), carte.getX() + 90, carte.getY() + 195);
+		}
+	}
+}
 
 export {handleDessinerCarteColonnes, handleDessinerCartesPioche, handleDessinerCartesPilesFin};
