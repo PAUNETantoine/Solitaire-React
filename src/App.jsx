@@ -18,7 +18,30 @@ function CanvaFrame({handleClicDroit})
 {
     return (
         <div onContextMenu={handleClicDroit}>
-             <canvas className="Piles" id="canvaFrame" width={window.innerWidth - 20} height={window.innerHeight - 50}/>
+             <canvas className="Piles" id="canvaFrame" width={window.innerWidth - 25} height={window.innerHeight - 50}/>
+        </div>
+    )
+}
+
+
+function BoutonsDiv({handleGameRefresh})
+{
+    return (
+        <div id="zoneBoutons">
+            <button id="Rafraichir" className="boutons" onClick={handleGameRefresh} ><img src={process.env.PUBLIC_URL + '/images/rafraichir.png'} ></img></button>
+            <button id="arriere"    className="boutons"></button>
+            <button id="avant"      className="boutons"></button>
+        </div>
+    )
+}
+
+function StartGame({handleGameStart})
+{
+    return (
+        <div id="zoneLancementJeu" className="zoneLancementJeu">
+            <h1>Solitaire-React</h1>
+            <button onClick={handleGameStart}><img src={process.env.PUBLIC_URL + '/images/play.png'}></img></button>
+            <h3>Par Antoine PAUNET</h3>
         </div>
     )
 }
@@ -49,19 +72,18 @@ function App()
         const canvaFrame = document.getElementById("canvaFrame");
  
 
-
         const handlePilesClick = (x, y) => {
 
 
             if(plateau.getCarteColonneSelectionne() !== null)
             {
-                handleDeplacerCarte(plateau.getCarteColonneSelectionne(), null, "FIN-COLONNE", plateau, jeuLance);
+                handleDeplacerCarte(plateau.getCarteColonneSelectionne(), Math.floor(x/130), "FIN-COLONNE", plateau, jeuLance);
                 return;
             }
 
             if(plateau.getCartePiocheEstSelectionne() && plateau.getCartePiocheSelectionne() !== null)
             {
-                handleDeplacerCarte(plateau.getCartePiocheSelectionne(), null, "FIN-PIOCHE", plateau, jeuLance);
+                handleDeplacerCarte(plateau.getCartePiocheSelectionne(), Math.floor(x/130), "FIN-PIOCHE", plateau, jeuLance);
                 return;
             }
 
@@ -198,7 +220,7 @@ function App()
                 }
             }
 
-            plateau.setCarteColonneSelectionne(null);
+            plateau.setCarteColonneSelectionne(null)
 
             handleRechargerPage(plateau, jeuLance);
         };
@@ -354,7 +376,7 @@ function App()
 
 
     const handleGameStart = () => {
-
+        document.getElementById('zoneLancementJeu').classList.add('cacher');;
         if(!jeuLance)
         {
             handleMelangerCartes();
@@ -401,15 +423,34 @@ function App()
                 return;
             }
 
-            handleDeplacerCarte(plateau.getCarteColonneSelectionne(), null, "FIN-COLONNE", plateau, jeuLance); //Transfert de colonnes vers FIN
+            let indexColCouleur;
+
+            for(let i = 0 ; i < plateau.tabFin.length ; i++)
+            {
+                if(plateau.tabFin[i][0] === undefined || (plateau.getCarteColonneSelectionne() !== undefined && plateau.tabFin[i][0].getForme() === plateau.getCarteColonneSelectionne().getForme()))
+                {
+                    indexColCouleur = i;
+                }
+            }
+
+            handleDeplacerCarte(plateau.getCarteColonneSelectionne(), indexColCouleur, "FIN-COLONNE", plateau, jeuLance); //Transfert de colonnes vers FIN
 
             plateau.setCarteColonneSelectionne(null);
 
         }else if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && x > (canvaFrame.width - 250) && x < (canvaFrame.width - 130) && y > 0 && y < 200)
         {
-            handleDeplacerCarte(plateau.getCartePiocheSelectionne(), null, "FIN-PIOCHE", plateau, jeuLance); //Transfert de pioche vers FIN
+            let indexColCouleur;
+
+            for(let i = 0 ; i < plateau.tabFin.length ; i++)
+            {
+                if(plateau.tabFin[i][0] === undefined || (plateau.getCarteColonneSelectionne() !== undefined && plateau.tabFin[i][0].getForme() === plateau.getCartePiocheSelectionne().getForme()))
+                {
+                    indexColCouleur = i;
+                }
+            }
+
+            handleDeplacerCarte(plateau.getCartePiocheSelectionne(), indexColCouleur, "FIN-PIOCHE", plateau, jeuLance); //Transfert de pioche vers FIN
         }else{
-            console.log("ok 2")
             return;
         }
       };
@@ -419,8 +460,8 @@ function App()
     return (
         <div className="BackGround">
             <CanvaFrame handleClicDroit={handleClicDroit}></CanvaFrame>
-            <button onClick={handleGameStart}>Lancer le jeu</button>
-
+            <BoutonsDiv></BoutonsDiv>
+            <StartGame handleGameStart={handleGameStart}></StartGame>
         </div>
     )
 }

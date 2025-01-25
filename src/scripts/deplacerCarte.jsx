@@ -18,22 +18,10 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 
 	if(location === "FIN-COLONNE")
 	{
-		let indexPileFin = 0;
-		
-		switch(carteDep.getForme())
+
+		if(plateau.tabFin[carteArr][0] === undefined && plateau.getCarteColonneSelectionne().getNombre() === 1) //On ne place qu'un AS sur une case vide
 		{
-			case "Coeur" : indexPileFin = 3; break;
-
-			case "Pique" : indexPileFin = 2; break;
-
-			case "Carreau" : indexPileFin = 1; break;
-
-			case "Trefle" : indexPileFin = 0; break;
-		}
-
-		if(plateau.tabFin[indexPileFin][0] === undefined && plateau.getCarteColonneSelectionne().getNombre() === 1) //On ne place qu'un AS sur une case vide
-		{
-			plateau.tabFin[indexPileFin].unshift(plateau.tabColonnes[plateau.getIndexColonneCarte(carteDep)].shift());
+			plateau.tabFin[carteArr].unshift(plateau.tabColonnes[plateau.getIndexColonneCarte(carteDep)].shift());
 			plateau.setCarteColonneSelectionne(null);
 
 			if(plateau.tabColonnes[indexCarteDep][0] !== undefined)
@@ -45,17 +33,17 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 
 			return;
 
-		}else if(plateau.tabFin[indexPileFin][0] === undefined && plateau.getCarteColonneSelectionne().getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
+		}else if(plateau.tabFin[carteArr][0] === undefined && plateau.getCarteColonneSelectionne().getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
 		{
 			return;
 		}
 
-		if(plateau.tabFin[indexPileFin][0].getNombre() !== plateau.getCarteColonneSelectionne().getNombre() - 1) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
+		if(plateau.tabFin[carteArr][0].getNombre() !== plateau.getCarteColonneSelectionne().getNombre() - 1) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
 		{
 			return;
 		}
 
-		plateau.tabFin[indexPileFin].unshift(plateau.tabColonnes[plateau.getIndexColonneCarte(carteDep)].shift());
+		plateau.tabFin[carteArr].unshift(plateau.tabColonnes[plateau.getIndexColonneCarte(carteDep)].shift());
 		plateau.setCarteColonneSelectionne(null);
 
 		if(plateau.tabColonnes[indexCarteDep][0] !== undefined)
@@ -70,25 +58,12 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 
 	if(location === "FIN-PIOCHE")
 	{
-		let indexPileFin = 0;
 
-		switch(carteDep.getForme())
+		if(plateau.tabFin[carteArr][0] === undefined && plateau.getCartePiocheSelectionne().getNombre() === 1) //On ne place qu'un AS sur une case vide
 		{
-			case "Coeur" : indexPileFin = 3; break;
+			plateau.tabFin[carteArr].unshift(carteDep);
 
-			case "Pique" : indexPileFin = 2; break;
-
-			case "Carreau" : indexPileFin = 1; break;
-
-			case "Trefle" : indexPileFin = 0; break;
-		}
-
-
-		if(plateau.tabFin[indexPileFin][0] === undefined && plateau.getCartePiocheSelectionne().getNombre() === 1) //On ne place qu'un AS sur une case vide
-		{
-			plateau.tabFin[indexPileFin].unshift(carteDep);
-
-			plateau.tabFin[indexPileFin][0].setEstRetournee(true);
+			plateau.tabFin[carteArr][0].setEstRetournee(true);
 			plateau.setCartePiocheSelectionne(null); 
 			plateau.setCartePiocheEstSelectionne(false);
 
@@ -96,21 +71,21 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 
 			return;
 
-		}else if(plateau.tabFin[indexPileFin][0] === undefined && plateau.getCartePiocheSelectionne().getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
+		}else if(plateau.tabFin[carteArr][0] === undefined && plateau.getCartePiocheSelectionne().getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
 		{
 			return;
 		}
 
-		if(plateau.tabFin[indexPileFin][0].getNombre() !== plateau.getCartePiocheSelectionne().getNombre() - 1) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
+		if(plateau.tabFin[carteArr][0].getNombre() !== plateau.getCartePiocheSelectionne().getNombre() - 1) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
 		{
 			return;
 		}
 
 
-		plateau.tabFin[indexPileFin].unshift(carteDep); 
-		plateau.tabFin[indexPileFin][0].setEstRetournee(true);
+		plateau.tabFin[carteArr].unshift(carteDep); 
+		plateau.tabFin[carteArr][0].setEstRetournee(true);
 
-		plateau.setCartePiocheSelectionne(plateau.cartes.pop());
+		plateau.setCartePiocheSelectionne(plateau.cartes.shift());
 
 		plateau.setCartePiocheEstSelectionne(false);
 
@@ -131,7 +106,7 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 		if(location === "PIOCHE")
 		{
 			plateau.tabColonnes[carteArr].unshift(plateau.getCartePiocheSelectionne());
-			plateau.setCartePiocheSelectionne(plateau.cartes.pop());
+			plateau.setCartePiocheSelectionne(plateau.cartes.shift());
 			plateau.setCartePiocheEstSelectionne(false);
 			plateau.tabColonnes[carteArr][0].setEstRetournee(true);
 
@@ -215,7 +190,7 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 	{
 		plateau.tabColonnes[indexCarteArr].unshift(plateau.getCartePiocheSelectionne())
 		plateau.tabColonnes[indexCarteArr][0].setEstRetournee(true);
-		plateau.setCartePiocheSelectionne(plateau.cartes.pop());
+		plateau.setCartePiocheSelectionne(plateau.cartes.shift());
 		plateau.setCartePiocheEstSelectionne(false);
 
 		handleRechargerPage(plateau, jeuLance);
