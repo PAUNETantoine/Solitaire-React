@@ -31,7 +31,7 @@ const checkVictoire = (plateau) =>
 
 	for(let i = 0 ; i < plateau.tabFin.length ; i++)
 	{
-		if(plateau.tabFin[i].length != 13)
+		if(plateau.tabFin[i].length !== 13)
 		{
 			return;
 		}

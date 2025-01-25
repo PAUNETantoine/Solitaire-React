@@ -18,7 +18,7 @@ function CanvaFrame({handleClicDroit})
 {
     return (
         <div onContextMenu={handleClicDroit}>
-             <canvas className="Piles" id="canvaFrame" width={window.innerWidth - 25} height={window.innerHeight - 50}/>
+             <canvas className="Piles" id="canvaFrame" width={window.innerWidth - 25} height={window.innerHeight}/>
         </div>
     )
 }
