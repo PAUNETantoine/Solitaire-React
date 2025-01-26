@@ -102,7 +102,10 @@ const handleDessinerCarteColonnes = (plateau, jeuLance) => {
 				}
 				else
 				{
-					ctx.drawImage(imgDosCarte, plateau.tabColonnes[i][j].getX(), plateau.tabColonnes[i][j].getY(), 120, 200);
+					if(!plateau.tabColonnes[i][j].getEstMouvement())
+					{
+						ctx.drawImage(imgDosCarte, plateau.tabColonnes[i][j].getX(), plateau.tabColonnes[i][j].getY(), 120, 200);
+					}
 				}
 			}else{
 				ctx.drawImage(imgCarte, xDebutColonnes + (i*120) + (i*10), yDebutColonnes + (plateau.tabColonnes[i].length-j)*30, 120, 200);
@@ -110,6 +113,9 @@ const handleDessinerCarteColonnes = (plateau, jeuLance) => {
 		}
 
 	}
+
+	let estPaquet = false;
+	let nbCartesPaquet = 0;
 	
 	for(let i = 0 ; i < plateau.tabColonnes.length ; i++)
 	{
@@ -117,6 +123,23 @@ const handleDessinerCarteColonnes = (plateau, jeuLance) => {
 		{
 			if(plateau.tabColonnes[i][j] !== undefined && plateau.tabColonnes[i][j].getEstMouvement())
 			{
+				if(plateau.getIndexLigneCarte(plateau.tabColonnes[i][j]) > 0 && !estPaquet)
+				{
+					estPaquet = true;
+					nbCartesPaquet = plateau.getIndexLigneCarte(plateau.tabColonnes[i][j]) + 1
+				}
+
+
+				if(estPaquet)
+				{
+					if(plateau.getIndexLigneCarte(plateau.tabColonnes[i][j]) === 0)
+					{
+						plateau.tabColonnes[i][j].setY(plateau.tabColonnes[i][j].getY() + (nbCartesPaquet*30) + 60);
+					}else{
+						plateau.tabColonnes[i][j].setY(plateau.tabColonnes[i][j].getY() + ((plateau.getIndexLigneCarte(plateau.tabColonnes[i][j]))*30) + (nbCartesPaquet * 30) - (30 * (j-1)) + 30)
+					}
+				}
+
 				dessinerUneCarte(plateau.tabColonnes[i][j], plateau, ctx)
 			}
 		}
@@ -181,6 +204,8 @@ const handleDessinerCartesPioche = (plateau) => {
 }
 
 const dessinerUneCarte = (carte, plateau, ctx) => {
+
+	
 	if(carte === plateau.getCarteColonneSelectionne())
 	{
 		ctx.drawImage(imgCarteSelect, carte.getX(), carte.getY(), 120, 200);

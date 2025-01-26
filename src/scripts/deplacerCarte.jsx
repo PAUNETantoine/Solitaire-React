@@ -10,6 +10,12 @@ File : deplacerCartes
 import handleRechargerPage from "./rechargerPage";
 
 const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) => {
+	
+	if(carteDep === null || carteDep === undefined) //Si on essaye de deplacer une case vide
+	{
+		return;
+	}
+
 
 	let indexCarteDep  = plateau.getIndexColonneCarte(carteDep);
 	let indexYCarteDep = plateau.getIndexLigneCarte(carteDep);
