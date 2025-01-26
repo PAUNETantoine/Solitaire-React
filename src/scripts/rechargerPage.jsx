@@ -23,21 +23,17 @@ const handleRechargerPage = (plateau, jeuLance) => {
 	}
 
 
-	checkVictoire(plateau, jeuLance);
+	checkVictoire(plateau);
 }
 
-const checkVictoire = (plateau, jeuLance) => 
+const checkVictoire = (plateau) => 
 {
-	if(!jeuLance) return;
 
-	for(let i = 0 ; i < plateau.tabColonnes.length ; i++)
+	for(let i = 0 ; i < plateau.tabFin.length ; i++)
 	{
-		for(let j = 0 ; j < plateau.tabColonnes[i].length ; i++)
+		if(plateau.tabFin[i].length !== 13)
 		{
-			if(plateau.tabColonnes[i][j] !== undefined && !plateau.tabColonnes[i][j].getEstRetournee())
-			{
-				return;
-			}
+			return;
 		}
 	}
 
