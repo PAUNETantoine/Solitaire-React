@@ -32,15 +32,23 @@ function Chronometre({jeuLance, gagner})
 		}
 	
 		return () => {
-		  clearInterval(interval);
+		  	clearInterval(interval);
 		};
 	}, [jeuLance, gagner]);
 	
-	  useEffect(() => {
+	useEffect(() => {
 		if (gagner) {
-		  	console.log("Chronomètre terminé !");
+			setMinutes(0);
+			setSecondes(0);
 		}
 	}, [gagner]);
+
+	useEffect(() => {
+		if (!jeuLance) {
+			setMinutes(0);
+			setSecondes(0);
+		}
+	}, [jeuLance]);
 
 	return (
 		<div id="chronometre">

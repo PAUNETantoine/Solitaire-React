@@ -79,7 +79,7 @@ function App()
     useEffect(() => {
         if(gagner && jeuLance)
         {
-            alert("Vous avez gagner !")
+            alert("Vous avez gagné !")
         }
     }, [gagner])
 
@@ -412,10 +412,12 @@ function App()
 
     const handleGameRefresh = () => {
         document.getElementById("chargementPage").classList.add("chargementPage");
+        setJeuLance(false);
         rechargerJeu(plateau);
         setTimeout(() => {
             handleRechargerPage(plateau, false, setGagner);
             document.getElementById("chargementPage").classList.remove("chargementPage");
+            setJeuLance(true);
         }, 1000)
     }
 
