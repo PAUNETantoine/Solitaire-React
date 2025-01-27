@@ -1,10 +1,17 @@
 /*
 @author : Antoine PAUNET
-Version : 0.6 Beta
+Version : 0.7 Beta
 Date    : 24/01/25
 --------------------
-File : main file
+File : css File
 */
+
+
+@font-face {
+    font-family: "Naturaly";
+    src: url("/public/fonts/Naturaly.otf") format("truetype");
+}
+
 
 .BackGround
 {
@@ -15,10 +22,6 @@ File : main file
     height: 98vh;
 	border: 2px solid black;
     background-image: url(/public/images/backGround.jpg);
-}
-
-.Piles
-{
 }
 
 #canvaFrame
@@ -32,49 +35,65 @@ File : main file
 {
     position: absolute;
     top: 4%;
-    left: 3%;
+    left: 5%;
     transform: translate(-50%, -50%);
     color: white;
     padding: 20px;
-    border-radius: 10px;
     text-align: center;
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 15px;
-  }
+}
 
 
-.boutons
-{
+
+.boutons {
     border: none;
     background: none;
     padding: 0;
     cursor: pointer;
     transition: transform 0.3s ease;
+    position: relative;
 }
-
 
 .boutons img {
     width: 60px;
     height: 60px;
     border-radius: 10px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
+}
 
 .boutons:hover img {
     transform: scale(1.2);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  }
+}
 
 .boutons:focus {
     outline: none;
 }
 
+.boutons::after {
+    content: attr(data-text);
+    font-family: "Naturaly", sans-serif;
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
 
-@font-face {
-    font-family: "Naturaly";
-    src: url("/public/fonts/Naturaly.otf") format("truetype");
+.boutons:hover::after {
+    opacity: 1;
+    visibility: visible;
 }
 
 .zoneLancementJeu {
@@ -124,4 +143,32 @@ File : main file
 .cacher 
 {
     display: none;
+}
+
+
+.chargementPage 
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#chronometre
+{
+    position: absolute;
+    top: 88%;
+    left: 2%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 5px;
+    font-family: "Naturaly", sans-serif;
+    font-size: 25px;
 }

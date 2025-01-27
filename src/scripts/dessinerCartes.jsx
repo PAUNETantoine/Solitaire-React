@@ -1,7 +1,7 @@
 /*
 @author : Antoine PAUNET
-Version : 0.6 Beta
-Date    : 24/01/25
+Version : 0.9 Beta
+Date    : 27/01/25
 --------------------
 File : dessinerCartes
 */
@@ -204,7 +204,6 @@ const handleDessinerCartesPioche = (plateau) => {
 }
 
 const dessinerUneCarte = (carte, plateau, ctx) => {
-
 	
 	if(carte === plateau.getCarteColonneSelectionne())
 	{
@@ -215,7 +214,6 @@ const dessinerUneCarte = (carte, plateau, ctx) => {
 	}
 
 	ctx.drawImage(carte.imgSymbole, carte.getX() + 18, carte.getY() + 75, 92, 49);
-
 
 	if(carte !== undefined)
 	{

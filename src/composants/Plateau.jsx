@@ -1,7 +1,7 @@
 /*
 @author : Antoine PAUNET
-Version : 0.6 Beta
-Date    : 24/01/25
+Version : 0.9 Beta
+Date    : 27/01/25
 --------------------
 File : Class plateau
 */
@@ -22,6 +22,7 @@ class Plateau
         this.cartePiocheEstSelectionne  = false;
 
         this.sourisClic = false;
+        this.melangerCartes();
     }
 
     /*Méthode permettant d'initialiser les cartes du deck*/
@@ -58,14 +59,11 @@ class Plateau
     {
         for (let i = this.cartes.length - 1; i > 0; i--) 
         {
-            // Générer un index aléatoire entre 0 et i
             const j = Math.floor(Math.random() * (i + 1));
     
-            // Échanger les éléments tableau[i] et tableau[j]
             [this.cartes[i], this.cartes[j]] = [this.cartes[j], this.cartes[i]];
         }
         
-        // Initialiser les sous-tableaux pour chaque colonne
         for (let i = 0; i < 7; i++) 
         {
             this.tabColonnes[i] = [];

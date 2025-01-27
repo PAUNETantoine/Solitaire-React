@@ -1,14 +1,16 @@
 /*
 @author : Antoine PAUNET
-Version : 0.6 Beta
-Date    : 24/01/25
+Version : 0.9 Beta
+Date    : 27/01/25
 --------------------
 File : rechargerPage
 */
 
 import { handleDessinerCarteColonnes, handleDessinerCartesPioche, handleDessinerCartesPilesFin } from "./dessinerCartes";
 
-const handleRechargerPage = (plateau, jeuLance) => {
+const handleRechargerPage = (plateau, jeuLance, setGagner) => {
+
+	checkVictoire(plateau, setGagner, jeuLance);
 
 	if(plateau.getCarteFinSelectionne() !== null) //Si la carte selectionnée est de la pile de fin alors on la place au dessus des autres elements
 	{
@@ -21,23 +23,22 @@ const handleRechargerPage = (plateau, jeuLance) => {
 		handleDessinerCarteColonnes(plateau, jeuLance);
 		handleDessinerCartesPioche(plateau);
 	}
-
-
-	checkVictoire(plateau);
 }
 
-const checkVictoire = (plateau) => 
+const checkVictoire = (plateau, setGagner, jeuLance) => 
 {
+	if(!jeuLance) return;
 
-	for(let i = 0 ; i < plateau.tabFin.length ; i++)
+	for(let i = 0 ; i < plateau.tabColonnes.length ; i++)
 	{
-		if(plateau.tabFin[i].length !== 13)
+		if(plateau.tabColonnes[i][plateau.tabColonnes[i].length-1] !== undefined && !plateau.tabColonnes[i][plateau.tabColonnes[i].length-1].getEstRetournee())
 		{
-			return;
+			setGagner(false)
+			return
 		}
 	}
 
-	alert("Vous avez gagner !")
+	setGagner(true);
 }
 
 

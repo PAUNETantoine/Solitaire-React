@@ -1,13 +1,10 @@
 /*
 @author : Antoine PAUNET
-Version : 0.6 Beta
-Date    : 24/01/25
+Version : 0.9 Beta
+Date    : 27/01/25
 --------------------
 File : deplacerCartes
 */
-
-
-import handleRechargerPage from "./rechargerPage";
 
 const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) => {
 	
@@ -34,9 +31,6 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 			{
 				plateau.tabColonnes[indexCarteDep][0].setEstRetournee(true);
 			}
-
-			handleRechargerPage(plateau, jeuLance);
-
 			return;
 
 		}else if(plateau.tabFin[carteArr][0] === undefined && plateau.getCarteColonneSelectionne().getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
@@ -56,9 +50,6 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 		{
 			plateau.tabColonnes[indexCarteDep][0].setEstRetournee(true);
 		}
-
-		handleRechargerPage(plateau, jeuLance);
-
 		return;
 	}
 
@@ -72,9 +63,6 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 			plateau.tabFin[carteArr][0].setEstRetournee(true);
 			plateau.setCartePiocheSelectionne(null); 
 			plateau.setCartePiocheEstSelectionne(false);
-
-			handleRechargerPage(plateau, jeuLance);
-
 			return;
 
 		}else if(plateau.tabFin[carteArr][0] === undefined && plateau.getCartePiocheSelectionne().getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
@@ -94,9 +82,6 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 		plateau.setCartePiocheSelectionne(plateau.cartes.shift());
 
 		plateau.setCartePiocheEstSelectionne(false);
-
-		handleRechargerPage(plateau, jeuLance);
-
 		return;
 	}
 	
@@ -115,9 +100,6 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 			plateau.setCartePiocheSelectionne(plateau.cartes.shift());
 			plateau.setCartePiocheEstSelectionne(false);
 			plateau.tabColonnes[carteArr][0].setEstRetournee(true);
-
-			handleRechargerPage(plateau, jeuLance);
-
 			return;
 		}
 
@@ -125,9 +107,6 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 		{
 			plateau.tabColonnes[carteArr].unshift(plateau.tabFin[plateau.getIndexFinCarte(carteDep)].shift());
 			plateau.setCarteFinSelectionne(null);
-
-			handleRechargerPage(plateau, jeuLance);
-
 			return;
 		}
 
@@ -198,8 +177,6 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 		plateau.tabColonnes[indexCarteArr][0].setEstRetournee(true);
 		plateau.setCartePiocheSelectionne(plateau.cartes.shift());
 		plateau.setCartePiocheEstSelectionne(false);
-
-		handleRechargerPage(plateau, jeuLance);
 		return;
 	}
 
@@ -207,8 +184,6 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 	{
 		plateau.tabColonnes[indexCarteArr].unshift(plateau.tabFin[plateau.getIndexFinCarte(carteDep)].shift())
 		plateau.setCarteFinSelectionne(null);
-
-		handleRechargerPage(plateau, jeuLance);
 		return;
 	}
 
@@ -219,8 +194,6 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 	}
 
 	plateau.setCarteColonneSelectionne(null);
-
-	handleRechargerPage(plateau, jeuLance);
 }
 
 export default handleDeplacerCarte;

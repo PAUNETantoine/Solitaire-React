@@ -1,7 +1,7 @@
 /*
 @author : Antoine PAUNET
-Version : 0.6 Beta
-Date    : 24/01/25
+Version : 0.9 Beta
+Date    : 27/01/25
 --------------------
 File : main file
 */
@@ -11,6 +11,8 @@ import React, { useEffect, useState } from "react";
 import "./styles/style.css";
 import handleRechargerPage from "./scripts/rechargerPage";
 import handleDeplacerCarte from "./scripts/deplacerCarte";
+import rechargerJeu        from "./scripts/rechargerJeu";
+import Chronometre         from "./composants/Chronometre";
 
 
 /*Ce composant contient tous le canva dans app et permet de dispatcher correctement les différents éléments*/
@@ -24,11 +26,21 @@ function CanvaFrame({handleClicDroit})
 }
 
 
+function ChargementPage()
+{
+    return (
+        <div id="chargementPage" className="cacher">
+            <img src={process.env.PUBLIC_URL + '/images/chargement.gif'} height="200px" width="200px"></img>
+        </div>
+    )
+}
+
+
 function BoutonsDiv({handleGameRefresh})
 {
     return (
         <div id="zoneBoutons">
-            <button id="Rafraichir" className="boutons" onClick={handleGameRefresh} ><img src={process.env.PUBLIC_URL + '/images/rafraichir.png'} ></img></button>
+            <button id="Rafraichir" className="boutons" onClick={handleGameRefresh} data-text="Relancer une partie"><img src={process.env.PUBLIC_URL + '/images/rafraichir.png'} ></img></button>
             <button id="arriere"    className="boutons"></button>
             <button id="avant"      className="boutons"></button>
         </div>
@@ -53,6 +65,7 @@ function App()
     //Les états
     const [plateau,  setPlateau ] = useState(null);
     const [jeuLance, setJeuLance] = useState(false);
+    const [gagner,   setGagner  ] = useState(false);
 
 
 
@@ -61,6 +74,14 @@ function App()
         const nouveauPlateau = new Plateau();
         setPlateau(nouveauPlateau);
     }, []);
+
+
+    useEffect(() => {
+        if(gagner && jeuLance)
+        {
+            alert("Vous avez gagner !")
+        }
+    }, [gagner])
 
 
 
@@ -90,7 +111,7 @@ function App()
             if(plateau.getCarteFinSelectionne() === plateau.tabFin[Math.floor(x/130)][0])
             {
                 plateau.setCarteFinSelectionne(null);
-                handleRechargerPage(plateau, jeuLance);
+                handleRechargerPage(plateau, jeuLance, setGagner);
                 return;
             }
 
@@ -98,7 +119,7 @@ function App()
             plateau.setCarteColonneSelectionne(null);
             plateau.setCartePiocheEstSelectionne(false);
 
-            handleRechargerPage(plateau, jeuLance);
+            handleRechargerPage(plateau, jeuLance, setGagner);
         };
 
 
@@ -129,11 +150,13 @@ function App()
                 if(plateau.tabColonnes[indexX][indexY] === undefined)
                 {
                     handleDeplacerCarte(carteDep, indexX, "PIOCHE", plateau, jeuLance);
+                    handleRechargerPage(plateau, jeuLance, setGagner);
                     return;
                 }
 
                 const carteArr = plateau.tabColonnes[indexX][indexY];
                 handleDeplacerCarte(carteDep, carteArr, "PIOCHE", plateau, jeuLance);
+                handleRechargerPage(plateau, jeuLance, setGagner);
                 return;
             }
 
@@ -145,11 +168,13 @@ function App()
                 if(plateau.tabColonnes[indexX][indexY] === undefined)
                 {
                     handleDeplacerCarte(carteDep, indexX, "FINversCOLONNES", plateau, jeuLance);
+                    handleRechargerPage(plateau, jeuLance, setGagner);
                     return;
                 }
 
                 const carteArr = plateau.tabColonnes[indexX][indexY];
                 handleDeplacerCarte(carteDep, carteArr, "FINversCOLONNES", plateau, jeuLance);
+                handleRechargerPage(plateau, jeuLance, setGagner);
                 return;
             }
 
@@ -163,7 +188,7 @@ function App()
             {
                 const carteDep = plateau.getCarteColonneSelectionne();
                 handleDeplacerCarte(carteDep, indexX, "COLONNES", plateau, jeuLance);
-                handleRechargerPage(plateau, jeuLance);
+                handleRechargerPage(plateau, jeuLance, setGagner);
                 return;
             }
 
@@ -188,7 +213,7 @@ function App()
                 }
             }
 
-            handleRechargerPage(plateau, jeuLance);
+            handleRechargerPage(plateau, jeuLance, setGagner);
         };
 
 
@@ -222,7 +247,7 @@ function App()
 
             plateau.setCarteColonneSelectionne(null)
 
-            handleRechargerPage(plateau, jeuLance);
+            handleRechargerPage(plateau, jeuLance, setGagner);
         };
 
 
@@ -293,7 +318,7 @@ function App()
 
             ctx.clearRect(0, 0, canvaFrame.width, canvaFrame.height);
 
-            handleRechargerPage(plateau, jeuLance);
+            handleRechargerPage(plateau, jeuLance, setGagner);
         });
         
         // Écouteur pour `mouseup`
@@ -346,7 +371,7 @@ function App()
 
             ctx.clearRect(0, 0, canvaFrame.width, canvaFrame.height);
 
-            handleRechargerPage(plateau, jeuLance);
+            handleRechargerPage(plateau, jeuLance, setGagner);
         });
 
       
@@ -379,17 +404,20 @@ function App()
         document.getElementById('zoneLancementJeu').classList.add('cacher');;
         if(!jeuLance)
         {
-            handleMelangerCartes();
-            handleRechargerPage(plateau, jeuLance);
+            handleRechargerPage(plateau, jeuLance, setGagner);
             setJeuLance(true);
         }
     }
 
 
-    const handleMelangerCartes = () => {
-        plateau.melangerCartes();
+    const handleGameRefresh = () => {
+        document.getElementById("chargementPage").classList.add("chargementPage");
+        rechargerJeu(plateau);
+        setTimeout(() => {
+            handleRechargerPage(plateau, false, setGagner);
+            document.getElementById("chargementPage").classList.remove("chargementPage");
+        }, 1000)
     }
-
 
 
     const handleClicDroit = (event) => {
@@ -453,15 +481,24 @@ function App()
         }else{
             return;
         }
+        handleRechargerPage(plateau, jeuLance, setGagner);
       };
+
+
+
+    //Mise en place de l'icon
+    let icon = document.getElementById("icon");
+    icon.href = process.env.PUBLIC_URL + '/images/logo.png';
     
     
     //Le rendu
     return (
         <div className="BackGround">
             <CanvaFrame handleClicDroit={handleClicDroit}></CanvaFrame>
-            <BoutonsDiv></BoutonsDiv>
+            <BoutonsDiv handleGameRefresh={handleGameRefresh}></BoutonsDiv>
             <StartGame handleGameStart={handleGameStart}></StartGame>
+            <Chronometre jeuLance={jeuLance} gagner={gagner}></Chronometre>
+            <ChargementPage></ChargementPage>
         </div>
     )
 }
