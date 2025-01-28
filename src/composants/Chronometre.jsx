@@ -23,7 +23,7 @@ function Chronometre({jeuLance, gagner})
 				setSecondes(prevSecondes => {
 			  		if (prevSecondes === 59) 
 					{
-						setMinutes(prevMinutes => prevMinutes + 1);
+						setMinutes(minutes + 1);
 						return 0;
 			  		}
 			  		return prevSecondes + 1;
@@ -52,7 +52,7 @@ function Chronometre({jeuLance, gagner})
 
 	return (
 		<div id="chronometre">
-      		<p>Temps : {minutes < 10 ? `0${minutes}` : minutes}:{secondes < 10 ? `0${secondes}` : secondes}</p>
+      		<p id="temps">Temps : {minutes < 10 ? `0${minutes}` : minutes}:{secondes < 10 ? `0${secondes}` : secondes}</p>
 			
 		</div>
 	)

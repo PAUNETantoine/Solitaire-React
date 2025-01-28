@@ -1,6 +1,6 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9 Beta
+Version : 0.9.1 Beta
 Date    : 27/01/25
 --------------------
 File : main file
@@ -58,6 +58,18 @@ function StartGame({handleGameStart})
     )
 }
 
+function AffichageGagner({handleGameRefresh})
+{
+    return (
+        <div id="zoneGagner" className="cacher">
+            <img src={process.env.PUBLIC_URL + '/images/feu d artifice.gif'}></img>
+            <p>Vous avez gagné !</p>
+            <p id="tpsFin">Temps :  </p>
+            <button id="Rafraichir" className="boutons" onClick={handleGameRefresh} data-text="Relancer une partie"><img src={process.env.PUBLIC_URL + '/images/rafraichir-fin.png'} ></img></button>
+        </div>
+    )
+}
+
 
 
 function App()
@@ -66,7 +78,6 @@ function App()
     const [plateau,  setPlateau ] = useState(null);
     const [jeuLance, setJeuLance] = useState(false);
     const [gagner,   setGagner  ] = useState(false);
-
 
 
     //Les comportements
@@ -79,7 +90,10 @@ function App()
     useEffect(() => {
         if(gagner && jeuLance)
         {
-            alert("Vous avez gagné !")
+            document.getElementById("zoneGagner").classList.add("zoneGagner");
+            document.getElementById("tpsFin").innerText = document.getElementById("temps").textContent
+        }else{
+            document.getElementById("zoneGagner").classList.remove("zoneGagner");
         }
     }, [gagner])
 
@@ -411,6 +425,7 @@ function App()
 
 
     const handleGameRefresh = () => {
+        document.getElementById("zoneGagner").classList.remove("zoneGagner")
         document.getElementById("chargementPage").classList.add("chargementPage");
         setJeuLance(false);
         rechargerJeu(plateau);
@@ -501,6 +516,7 @@ function App()
             <StartGame handleGameStart={handleGameStart}></StartGame>
             <Chronometre jeuLance={jeuLance} gagner={gagner}></Chronometre>
             <ChargementPage></ChargementPage>
+            <AffichageGagner handleGameRefresh={handleGameRefresh}></AffichageGagner>
         </div>
     )
 }
