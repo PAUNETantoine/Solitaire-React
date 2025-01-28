@@ -7,39 +7,46 @@ File : Comp Chrono
 */
 
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 function Chronometre({jeuLance, gagner})
 {
+	const secondesRef = useRef(0);
+	const minutesRef = useRef(0);
+
 	const [secondes, setSecondes] = useState(0);
 	const [minutes, setMinutes  ] = useState(0);
 
 	useEffect(() => {
 		let interval;
-		
+	
 		if (jeuLance && !gagner) 
 		{
 		  	interval = setInterval(() => {
-				setSecondes(prevSecondes => {
-			  		if (prevSecondes === 59) 
-					{
-						setMinutes(minutes + 1);
-						return 0;
-			  		}
-			  		return prevSecondes + 1;
-				});
+				secondesRef.current += 1;
+	
+				if (secondesRef.current > 59) 
+				{
+			  		secondesRef.current = 0;
+			  		minutesRef.current += 1;
+			  		setMinutes(minutesRef.current);
+				}
+	
+				setSecondes(secondesRef.current);
 		  	}, 1000);
 		}
 	
 		return () => {
 		  	clearInterval(interval);
 		};
-	}, [jeuLance, gagner]);
+	  }, [jeuLance, gagner]);
 	
 	useEffect(() => {
 		if (gagner) {
 			setMinutes(0);
 			setSecondes(0);
+			secondesRef.current = 0;
+			minutesRef.current = 0;
 		}
 	}, [gagner]);
 
@@ -47,6 +54,8 @@ function Chronometre({jeuLance, gagner})
 		if (!jeuLance) {
 			setMinutes(0);
 			setSecondes(0);
+			secondesRef.current = 0;
+			minutesRef.current = 0;
 		}
 	}, [jeuLance]);
 
