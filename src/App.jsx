@@ -1,7 +1,7 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9.1 Beta
-Date    : 27/01/25
+Version : 0.9.5 Beta
+Date    : 29/01/25
 --------------------
 File : main file
 */
@@ -13,6 +13,7 @@ import handleRechargerPage from "./scripts/rechargerPage";
 import handleDeplacerCarte from "./scripts/deplacerCarte";
 import rechargerJeu        from "./scripts/rechargerJeu";
 import Chronometre         from "./composants/Chronometre";
+import triAutomatique      from "./scripts/triAutomatique";
 
 
 /*Ce composant contient tous le canva dans app et permet de dispatcher correctement les différents éléments*/
@@ -36,13 +37,14 @@ function ChargementPage()
 }
 
 
-function BoutonsDiv({handleGameRefresh})
+function BoutonsDiv({handleGameRefresh, handleAutoStore})
 {
     return (
         <div id="zoneBoutons">
             <button id="Rafraichir" className="boutons" onClick={handleGameRefresh} data-text="Relancer une partie"><img src={process.env.PUBLIC_URL + '/images/rafraichir.png'} ></img></button>
             <button id="arriere"    className="boutons"></button>
             <button id="avant"      className="boutons"></button>
+            <button id="rangementAuto" className="cacher" onClick={handleAutoStore}>Fin automatique</button>
         </div>
     )
 }
@@ -90,10 +92,12 @@ function App()
     useEffect(() => {
         if(gagner && jeuLance)
         {
-            document.getElementById("zoneGagner").classList.add("zoneGagner");
-            document.getElementById("tpsFin").innerText = document.getElementById("temps").textContent
+            document.getElementById("rangementAuto").classList.remove("cacher");
+            document.getElementById("rangementAuto").classList.add("boutons");
         }else{
             document.getElementById("zoneGagner").classList.remove("zoneGagner");
+            document.getElementById("rangementAuto").classList.remove("boutons");
+            document.getElementById("rangementAuto").classList.add("cacher");
         }
     }, [gagner])
 
@@ -427,13 +431,19 @@ function App()
     const handleGameRefresh = () => {
         document.getElementById("zoneGagner").classList.remove("zoneGagner")
         document.getElementById("chargementPage").classList.add("chargementPage");
+        document.getElementById("rangementAuto").classList.add("cacher");
         setJeuLance(false);
+        setGagner(false);
         rechargerJeu(plateau);
         setTimeout(() => {
             handleRechargerPage(plateau, false, setGagner);
             document.getElementById("chargementPage").classList.remove("chargementPage");
             setJeuLance(true);
         }, 1000)
+    }
+
+    const handleAutoStore = () => {
+        triAutomatique(plateau, setGagner)
     }
 
 
@@ -443,11 +453,6 @@ function App()
         const y = event.clientY;
 
         const canvaFrame = document.getElementById("canvaFrame");
-
-        if(plateau.getCarteColonneSelectionne() !== null && plateau.getIndexLigneCarte(plateau.getCarteColonneSelectionne()) !== 0)
-        {
-            return;
-        }
     
         if(x > (canvaFrame.width / 2 - 450) && x < (canvaFrame.width / 2 + 450) && y > 250 && y < 850)
         {
@@ -462,6 +467,13 @@ function App()
             }
 
             plateau.setCarteColonneSelectionne(plateau.tabColonnes[indexX][indexY]);
+
+            console.log(plateau.getCarteColonneSelectionne())
+
+            if(plateau.getCarteColonneSelectionne() === null || plateau.getCarteColonneSelectionne() === undefined || plateau.getIndexLigneCarte(plateau.getCarteColonneSelectionne()) !== 0)
+            {
+                return;
+            }
 
             if(plateau.getCarteColonneSelectionne === null)
             {
@@ -512,7 +524,7 @@ function App()
     return (
         <div className="BackGround">
             <CanvaFrame handleClicDroit={handleClicDroit}></CanvaFrame>
-            <BoutonsDiv handleGameRefresh={handleGameRefresh}></BoutonsDiv>
+            <BoutonsDiv handleGameRefresh={handleGameRefresh} handleAutoStore={handleAutoStore}></BoutonsDiv>
             <StartGame handleGameStart={handleGameStart}></StartGame>
             <Chronometre jeuLance={jeuLance} gagner={gagner}></Chronometre>
             <ChargementPage></ChargementPage>

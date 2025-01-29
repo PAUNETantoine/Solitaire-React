@@ -1,6 +1,6 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9 Beta
+Version : 0.9.5 Beta
 Date    : 27/01/25
 --------------------
 File : Class carte

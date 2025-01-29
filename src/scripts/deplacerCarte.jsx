@@ -1,7 +1,7 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9 Beta
-Date    : 27/01/25
+Version : 0.9.5 Beta
+Date    : 29/01/25
 --------------------
 File : deplacerCartes
 */
@@ -9,6 +9,12 @@ File : deplacerCartes
 const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) => {
 	
 	if(carteDep === null || carteDep === undefined) //Si on essaye de deplacer une case vide
+	{
+		return;
+	}
+
+
+	if(carteArr === null || carteArr === undefined)
 	{
 		return;
 	}
@@ -22,7 +28,7 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 	if(location === "FIN-COLONNE")
 	{
 
-		if(plateau.tabFin[carteArr][0] === undefined && plateau.getCarteColonneSelectionne().getNombre() === 1) //On ne place qu'un AS sur une case vide
+		if(plateau.tabFin[carteArr][0] === undefined && carteDep.getNombre() === 1) //On ne place qu'un AS sur une case vide
 		{
 			plateau.tabFin[carteArr].unshift(plateau.tabColonnes[plateau.getIndexColonneCarte(carteDep)].shift());
 			plateau.setCarteColonneSelectionne(null);
@@ -33,12 +39,12 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 			}
 			return;
 
-		}else if(plateau.tabFin[carteArr][0] === undefined && plateau.getCarteColonneSelectionne().getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
+		}else if(plateau.tabFin[carteArr][0] === undefined && carteDep.getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
 		{
 			return;
 		}
 
-		if(plateau.tabFin[carteArr][0].getNombre() !== plateau.getCarteColonneSelectionne().getNombre() - 1) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
+		if(plateau.tabFin[carteArr][0].getNombre() !== carteDep.getNombre() - 1) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
 		{
 			return;
 		}
@@ -61,7 +67,7 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) =>
 			plateau.tabFin[carteArr].unshift(carteDep);
 
 			plateau.tabFin[carteArr][0].setEstRetournee(true);
-			plateau.setCartePiocheSelectionne(null); 
+			plateau.setCartePiocheSelectionne(plateau.cartes.shift()); 
 			plateau.setCartePiocheEstSelectionne(false);
 			return;
 

@@ -1,7 +1,7 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9 Beta
-Date    : 27/01/25
+Version : 0.9.5 Beta
+Date    : 29/01/25
 --------------------
 File : Comp Chrono
 */
@@ -40,18 +40,11 @@ function Chronometre({jeuLance, gagner})
 		  	clearInterval(interval);
 		};
 	  }, [jeuLance, gagner]);
-	
-	useEffect(() => {
-		if (gagner) {
-			setMinutes(0);
-			setSecondes(0);
-			secondesRef.current = 0;
-			minutesRef.current = 0;
-		}
-	}, [gagner]);
+
 
 	useEffect(() => {
-		if (!jeuLance) {
+		if (!jeuLance) 
+		{
 			setMinutes(0);
 			setSecondes(0);
 			secondesRef.current = 0;
