@@ -6,72 +6,28 @@ Date    : 29/01/25
 File : main file
 */
 
-import { Plateau } from "./composants/Plateau"
 import React, { useEffect, useState } from "react";
 import "./styles/style.css";
+import { Plateau } from "./scripts/Plateau"
+
+/*Import dans scripts principaux*/
 import handleRechargerPage from "./scripts/rechargerPage";
 import handleDeplacerCarte from "./scripts/deplacerCarte";
 import rechargerJeu        from "./scripts/rechargerJeu";
-import Chronometre         from "./composants/Chronometre";
+import Chronometre         from "./scripts/Chronometre";
 import triAutomatique      from "./scripts/triAutomatique";
 
 
-/*Ce composant contient tous le canva dans app et permet de dispatcher correctement les différents éléments*/
-function CanvaFrame({handleClicDroit})
-{
-    return (
-        <div onContextMenu={handleClicDroit}>
-             <canvas className="Piles" id="canvaFrame" width={window.innerWidth - 25} height={window.innerHeight}/>
-        </div>
-    )
-}
+/*Importation des composants */
+import CanvaFrame       from "./composants/CanvaFrame";
+import ChargementPage   from "./composants/ChargementPage";
+import BoutonsDiv       from "./composants/BoutonsDiv";
+import StartGame        from "./composants/StartGame";
+import AffichageGagner  from "./composants/AffichageGagner";
 
 
-function ChargementPage()
-{
-    return (
-        <div id="chargementPage" className="cacher">
-            <img src={process.env.PUBLIC_URL + '/images/chargement.gif'} height="200px" width="200px"></img>
-        </div>
-    )
-}
-
-
-function BoutonsDiv({handleGameRefresh, handleAutoStore})
-{
-    return (
-        <div id="zoneBoutons">
-            <button id="Rafraichir" className="boutons" onClick={handleGameRefresh} data-text="Relancer une partie"><img src={process.env.PUBLIC_URL + '/images/rafraichir.png'} ></img></button>
-            <button id="arriere"    className="boutons"></button>
-            <button id="avant"      className="boutons"></button>
-            <button id="rangementAuto" className="cacher" onClick={handleAutoStore}>Fin automatique</button>
-        </div>
-    )
-}
-
-function StartGame({handleGameStart})
-{
-    return (
-        <div id="zoneLancementJeu" className="zoneLancementJeu">
-            <h1>Solitaire-React</h1>
-            <button onClick={handleGameStart}><img src={process.env.PUBLIC_URL + '/images/play.png'}></img></button>
-            <h3>Par Antoine PAUNET</h3>
-        </div>
-    )
-}
-
-function AffichageGagner({handleGameRefresh})
-{
-    return (
-        <div id="zoneGagner" className="cacher">
-            <img src={process.env.PUBLIC_URL + '/images/feu d artifice.gif'}></img>
-            <p>Vous avez gagné !</p>
-            <p id="tpsFin">Temps :  </p>
-            <button id="Rafraichir" className="boutons" onClick={handleGameRefresh} data-text="Relancer une partie"><img src={process.env.PUBLIC_URL + '/images/rafraichir-fin.png'} ></img></button>
-        </div>
-    )
-}
-
+/*Import des scripts utiles*/
+import { clicEstDansColonnes, clicEstDansPioche } from "./scripts/Utile";
 
 
 function App()
@@ -116,13 +72,13 @@ function App()
 
             if(plateau.getCarteColonneSelectionne() !== null)
             {
-                handleDeplacerCarte(plateau.getCarteColonneSelectionne(), Math.floor(x/130), "FIN-COLONNE", plateau, jeuLance);
+                handleDeplacerCarte(plateau.getCarteColonneSelectionne(), Math.floor(x/130), "FIN-COLONNE", plateau);
                 return;
             }
 
             if(plateau.getCartePiocheEstSelectionne() && plateau.getCartePiocheSelectionne() !== null)
             {
-                handleDeplacerCarte(plateau.getCartePiocheSelectionne(), Math.floor(x/130), "FIN-PIOCHE", plateau, jeuLance);
+                handleDeplacerCarte(plateau.getCartePiocheSelectionne(), Math.floor(x/130), "FIN-PIOCHE", plateau);
                 return;
             }
 
@@ -167,13 +123,13 @@ function App()
 
                 if(plateau.tabColonnes[indexX][indexY] === undefined)
                 {
-                    handleDeplacerCarte(carteDep, indexX, "PIOCHE", plateau, jeuLance);
+                    handleDeplacerCarte(carteDep, indexX, "PIOCHE", plateau);
                     handleRechargerPage(plateau, jeuLance, setGagner);
                     return;
                 }
 
                 const carteArr = plateau.tabColonnes[indexX][indexY];
-                handleDeplacerCarte(carteDep, carteArr, "PIOCHE", plateau, jeuLance);
+                handleDeplacerCarte(carteDep, carteArr, "PIOCHE", plateau);
                 handleRechargerPage(plateau, jeuLance, setGagner);
                 return;
             }
@@ -185,13 +141,13 @@ function App()
 
                 if(plateau.tabColonnes[indexX][indexY] === undefined)
                 {
-                    handleDeplacerCarte(carteDep, indexX, "FINversCOLONNES", plateau, jeuLance);
+                    handleDeplacerCarte(carteDep, indexX, "FINversCOLONNES", plateau);
                     handleRechargerPage(plateau, jeuLance, setGagner);
                     return;
                 }
 
                 const carteArr = plateau.tabColonnes[indexX][indexY];
-                handleDeplacerCarte(carteDep, carteArr, "FINversCOLONNES", plateau, jeuLance);
+                handleDeplacerCarte(carteDep, carteArr, "FINversCOLONNES", plateau);
                 handleRechargerPage(plateau, jeuLance, setGagner);
                 return;
             }
@@ -205,7 +161,7 @@ function App()
             if(plateau.tabColonnes[indexX][indexY] === undefined) //Si clic sur une colonne vide
             {
                 const carteDep = plateau.getCarteColonneSelectionne();
-                handleDeplacerCarte(carteDep, indexX, "COLONNES", plateau, jeuLance);
+                handleDeplacerCarte(carteDep, indexX, "COLONNES", plateau);
                 handleRechargerPage(plateau, jeuLance, setGagner);
                 return;
             }
@@ -221,9 +177,9 @@ function App()
 
                     if(carteArr === undefined) //Si clic sur colonne vide
                     {
-                        handleDeplacerCarte(carteDep, indexX, "COLONNES", plateau, jeuLance);
+                        handleDeplacerCarte(carteDep, indexX, "COLONNES", plateau);
                     }else{
-                        handleDeplacerCarte(carteDep, carteArr, "COLONNES", plateau, jeuLance);
+                        handleDeplacerCarte(carteDep, carteArr, "COLONNES", plateau);
                     }
 
                 }else{
@@ -366,7 +322,7 @@ function App()
             }
 
 
-            if(plateau.getCarteColonneSelectionne() !== null)
+            if(plateau.getCarteColonneSelectionne() !== null && plateau.getCarteColonneSelectionne !== undefined)
             {
                 plateau.getCarteColonneSelectionne().setEstMouvement(false);
             }else if(plateau.getCartePiocheEstSelectionne())
@@ -432,9 +388,11 @@ function App()
         document.getElementById("zoneGagner").classList.remove("zoneGagner")
         document.getElementById("chargementPage").classList.add("chargementPage");
         document.getElementById("rangementAuto").classList.add("cacher");
+
         setJeuLance(false);
         setGagner(false);
         rechargerJeu(plateau);
+
         setTimeout(() => {
             handleRechargerPage(plateau, false, setGagner);
             document.getElementById("chargementPage").classList.remove("chargementPage");
@@ -454,7 +412,7 @@ function App()
 
         const canvaFrame = document.getElementById("canvaFrame");
     
-        if(x > (canvaFrame.width / 2 - 450) && x < (canvaFrame.width / 2 + 450) && y > 250 && y < 850)
+        if(clicEstDansColonnes(x,y))
         {
             let indexX = Math.floor((x - (canvaFrame.width / 2 - 450))/130);
             let indexY = Math.floor((y - 250)/30);
@@ -468,14 +426,7 @@ function App()
 
             plateau.setCarteColonneSelectionne(plateau.tabColonnes[indexX][indexY]);
 
-            console.log(plateau.getCarteColonneSelectionne())
-
             if(plateau.getCarteColonneSelectionne() === null || plateau.getCarteColonneSelectionne() === undefined || plateau.getIndexLigneCarte(plateau.getCarteColonneSelectionne()) !== 0)
-            {
-                return;
-            }
-
-            if(plateau.getCarteColonneSelectionne === null)
             {
                 return;
             }
@@ -484,17 +435,17 @@ function App()
 
             for(let i = 0 ; i < plateau.tabFin.length ; i++)
             {
-                if(plateau.tabFin[i][0] === undefined || (plateau.getCarteColonneSelectionne() !== undefined && plateau.tabFin[i][0].getForme() === plateau.getCarteColonneSelectionne().getForme()))
+                if(plateau.tabFin[i][0] === undefined || plateau.tabFin[i][0].getForme() === plateau.getCarteColonneSelectionne().getForme())
                 {
                     indexColCouleur = i;
                 }
             }
 
-            handleDeplacerCarte(plateau.getCarteColonneSelectionne(), indexColCouleur, "FIN-COLONNE", plateau, jeuLance); //Transfert de colonnes vers FIN
+            handleDeplacerCarte(plateau.getCarteColonneSelectionne(), indexColCouleur, "FIN-COLONNE", plateau); //Transfert de colonnes vers FIN
 
             plateau.setCarteColonneSelectionne(null);
 
-        }else if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && x > (canvaFrame.width - 250) && x < (canvaFrame.width - 130) && y > 0 && y < 200)
+        }else if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && clicEstDansPioche(x,y))
         {
             let indexColCouleur;
 
@@ -506,13 +457,12 @@ function App()
                 }
             }
 
-            handleDeplacerCarte(plateau.getCartePiocheSelectionne(), indexColCouleur, "FIN-PIOCHE", plateau, jeuLance); //Transfert de pioche vers FIN
+            handleDeplacerCarte(plateau.getCartePiocheSelectionne(), indexColCouleur, "FIN-PIOCHE", plateau); //Transfert de pioche vers FIN
         }else{
             return;
         }
         handleRechargerPage(plateau, jeuLance, setGagner);
-      };
-
+    };
 
 
     //Mise en place de l'icon

@@ -6,7 +6,7 @@ Date    : 29/01/25
 File : deplacerCartes
 */
 
-const handleDeplacerCarte = (carteDep, carteArr, location, plateau, jeuLance) => {
+const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 	
 	if(carteDep === null || carteDep === undefined) //Si on essaye de deplacer une case vide
 	{
