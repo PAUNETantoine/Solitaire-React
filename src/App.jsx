@@ -12,7 +12,6 @@ import { Plateau } from "./scripts/Plateau"
 
 /*Import dans scripts principaux*/
 import handleRechargerPage from "./scripts/rechargerPage";
-import handleDeplacerCarte from "./scripts/deplacerCarte";
 import rechargerJeu        from "./scripts/rechargerJeu";
 import Chronometre         from "./scripts/Chronometre";
 import triAutomatique      from "./scripts/triAutomatique";

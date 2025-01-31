@@ -38,7 +38,7 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 			}
 			return;
 
-		}else if(plateau.tabFin[carteArr][0] === undefined && carteDep.getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
+		}else if(estSurCaseVide(carteDep, carteArr ,plateau)) //Si on essaye de placer autre chose qu'un AS alors on retourne
 		{
 			return;
 		}
@@ -61,7 +61,7 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 	if(location === "FIN-PIOCHE")
 	{
 
-		if(plateau.tabFin[carteArr][0] === undefined && plateau.getCartePiocheSelectionne().getNombre() === 1) //On ne place qu'un AS sur une case vide
+		if(estSurCaseVide(carteDep, carteArr, plateau)) //On ne place qu'un AS sur une case vide
 		{
 			plateau.tabFin[carteArr].unshift(carteDep);
 
@@ -200,5 +200,11 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 
 	plateau.setCarteColonneSelectionne(null);
 }
+
+
+const estSurCaseVide = (carte, carteArr, plateau) => {
+	return plateau.tabFin[carteArr][0] === undefined && carte.getNombre() === 1;
+}
+
 
 export default handleDeplacerCarte;
