@@ -13,7 +13,6 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 		return;
 	}
 
-
 	if(carteArr === null || carteArr === undefined)
 	{
 		return;
@@ -44,7 +43,7 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 			return;
 		}
 
-		if(plateau.tabFin[carteArr][0].getNombre() !== carteDep.getNombre() - 1) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
+		if(plateau.tabFin[carteArr][0].getNombre() !== carteDep.getNombre() - 1 || plateau.tabFin[carteArr][0].getForme() !== carteDep.getForme()) //Si la carte qu'on met est bien le nombre au dessus de l'ancien et la forme est bien la même
 		{
 			return;
 		}
@@ -76,7 +75,7 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 			return;
 		}
 
-		if(plateau.tabFin[carteArr][0].getNombre() !== plateau.getCartePiocheSelectionne().getNombre() - 1) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
+		if(plateau.tabFin[carteArr][0].getNombre() !== plateau.getCartePiocheSelectionne().getNombre() - 1 || plateau.tabFin[carteArr][0].getForme() !== carteDep.getForme()) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
 		{
 			return;
 		}
