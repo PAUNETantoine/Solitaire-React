@@ -1,21 +1,22 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9.5 Beta
-Date    : 29/01/25
+Version : 1.0
+Date    : 04/02/25
 --------------------
-File : main file
+Fichier qui mutualise tout le code et permet de générer la page web.
 */
 
 import React, { useEffect, useState } from "react";
 import "./styles/style.css";
-import { Plateau } from "./scripts/Plateau"
 
 /*Import dans scripts principaux*/
+import { Plateau }         from "./scripts/Plateau";
 import handleRechargerPage from "./scripts/rechargerPage";
 import rechargerJeu        from "./scripts/rechargerJeu";
-import Chronometre         from "./scripts/Chronometre";
+import Chronometre         from "./composants/Chronometre";
 import triAutomatique      from "./scripts/triAutomatique";
 import clicDroit           from "./scripts/ClicDroit";
+import AnnulerCoup         from "./scripts/AnnulerCoup";
 
 /*Importation des composants */
 import CanvaFrame       from "./composants/CanvaFrame";
@@ -23,6 +24,7 @@ import ChargementPage   from "./composants/ChargementPage";
 import BoutonsDiv       from "./composants/BoutonsDiv";
 import StartGame        from "./composants/StartGame";
 import AffichageGagner  from "./composants/AffichageGagner";
+import NombreDeClics    from "./composants/NombreDeClics";
 
 
 /*Import des scripts utiles*/
@@ -32,9 +34,10 @@ import gestionClick from "./scripts/ClicGauche";
 function App()
 {
     //Les états
-    const [plateau,  setPlateau ] = useState(null);
-    const [jeuLance, setJeuLance] = useState(false);
-    const [gagner,   setGagner  ] = useState(false);
+    const [plateau,         setPlateau ] = useState(null);
+    const [annulerCoup,  setAnnulerCoup] = useState(new AnnulerCoup());
+    const [jeuLance,        setJeuLance] = useState(false);
+    const [gagner,          setGagner  ] = useState(false);
 
 
     //Les comportements
@@ -71,9 +74,12 @@ function App()
             const y = event.offsetY;
 
             plateau.sourisClic = true;
-            
-            gestionClick(x, y, plateau, false);
 
+            if(gestionClick(x, y, plateau, false, annulerCoup)) //Permet de recharger la page après la modification des valeurs
+            {
+                handleRechargerPage(plateau, jeuLance, setGagner);
+                annulerCoup.ajouterCoup(plateau);
+            }
             handleRechargerPage(plateau, jeuLance, setGagner);
         });
 
@@ -132,11 +138,9 @@ function App()
 
             plateau.sourisClic = false;
 
-            
-
             //Vérifications
 
-            gestionClick(x, y, plateau, true);
+            let estCoupValide = gestionClick(x, y, plateau, true, annulerCoup)
 
 
             if(plateau.getCarteColonneSelectionne() !== null && plateau.getCarteColonneSelectionne() !== undefined)
@@ -160,6 +164,11 @@ function App()
 
             ctx.clearRect(0, 0, canvaFrame.width, canvaFrame.height);
 
+            if(estCoupValide)
+            {
+                handleRechargerPage(plateau, jeuLance, setGagner);
+                annulerCoup.ajouterCoup(plateau)
+            }
             handleRechargerPage(plateau, jeuLance, setGagner);
         });
 
@@ -195,6 +204,7 @@ function App()
         {
             handleRechargerPage(plateau, jeuLance, setGagner);
             setJeuLance(true);
+            annulerCoup.ajouterCoup(plateau);
         }
     }
 
@@ -207,6 +217,7 @@ function App()
         setJeuLance(false);
         setGagner(false);
         rechargerJeu(plateau);
+        annulerCoup.rechargerJeu();
 
         setTimeout(() => {
             handleRechargerPage(plateau, false, setGagner);
@@ -216,15 +227,25 @@ function App()
     }
 
     const handleAutoStore = () => {
+        annulerCoup.autoSort = true;
         triAutomatique(plateau, setGagner)
     }
 
 
     const handleClicDroit = (event) => {
-        clicDroit(event, plateau, jeuLance, setGagner);
+        if(clicDroit(event, plateau, annulerCoup)) //On change les coordonnées avant
+        {
+            handleRechargerPage(plateau, jeuLance, setGagner);
+            annulerCoup.ajouterCoup(plateau);
+        }
         handleRechargerPage(plateau, jeuLance, setGagner);
     }
 
+
+    const handleRetourArriere = () => {
+        annulerCoup.enArriere(plateau);
+        handleRechargerPage(plateau, jeuLance, setGagner);
+    }
 
     //Mise en place de l'icon
     let icon = document.getElementById("icon");
@@ -235,11 +256,12 @@ function App()
     return (
         <div className="BackGround">
             <CanvaFrame handleClicDroit={handleClicDroit}></CanvaFrame>
-            <BoutonsDiv handleGameRefresh={handleGameRefresh} handleAutoStore={handleAutoStore}></BoutonsDiv>
+            <BoutonsDiv handleGameRefresh={handleGameRefresh} handleAutoStore={handleAutoStore} handleRetourArriere={handleRetourArriere}></BoutonsDiv>
             <StartGame handleGameStart={handleGameStart}></StartGame>
             <Chronometre jeuLance={jeuLance} gagner={gagner}></Chronometre>
             <ChargementPage></ChargementPage>
             <AffichageGagner handleGameRefresh={handleGameRefresh}></AffichageGagner>
+            <NombreDeClics nbClics={annulerCoup}></NombreDeClics>
         </div>
     )
 }

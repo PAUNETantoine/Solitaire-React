@@ -1,9 +1,9 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9.5 Beta
-Date    : 29/01/25
+Version : 1.0
+Date    : 04/02/25
 --------------------
-File : dessinerCartes
+Script permettant de dessiner les cartes sur le plateau
 */
 
 
@@ -15,15 +15,36 @@ const imgDosCarte = new Image();
 imgDosCarte.src = process.env.PUBLIC_URL + '/images/dosCarte.png';
 
 const imgCarteSelect = new Image();
-imgCarteSelect.src = process.env.PUBLIC_URL + '/images/CarteSelection.png'
+imgCarteSelect.src = process.env.PUBLIC_URL + '/images/CarteSelection.png';
 
+const imgTrefle = new Image();
+imgTrefle.src = process.env.PUBLIC_URL + '/images/Trefle.png';
 
+const imgPique = new Image();
+imgPique.src = process.env.PUBLIC_URL + '/images/Pique.png';
+
+const imgCoeur = new Image();
+imgCoeur.src = process.env.PUBLIC_URL + '/images/Coeur.png';
+
+const imgCarreau = new Image();
+imgCarreau.src = process.env.PUBLIC_URL + '/images/Carreau.png';
+
+const getImage = (carte) => 
+{
+	switch(carte.forme)
+	{
+		case "Trefle" :  return imgTrefle;
+		case "Pique" :   return imgPique;
+		case "Coeur" :   return imgCoeur;
+		case "Carreau" : return imgCarreau;
+		default : return;
+	}
+}
 
 const handleDessinerCartesPilesFin = (plateau) => {
 	let canva = document.getElementById("canvaFrame");
 	let ctx = canva.getContext("2d");
 	ctx.font = '25px Arial';
-
 
 	const xDebutPiles = canva.width / 2 - 235; //On place la pile en haut au mileu
 
@@ -47,7 +68,7 @@ const handleDessinerCartesPilesFin = (plateau) => {
 				}
 
 
-				ctx.drawImage(plateau.tabFin[i][0].imgSymbole, plateau.tabFin[i][0].getX() + 18, plateau.tabFin[i][0].getY() + 75, 92, 49);
+				ctx.drawImage(getImage(plateau.tabFin[i][0]), plateau.tabFin[i][0].getX() + 18, plateau.tabFin[i][0].getY() + 75, 92, 49);
 
 				ctx.fillStyle = plateau.tabFin[i][0].couleur;
 
@@ -174,7 +195,7 @@ const handleDessinerCartesPioche = (plateau) => {
 			ctx.drawImage(imgCarte, plateau.getCartePiocheSelectionne().getX(), plateau.getCartePiocheSelectionne().getY(), 120, 200);
 		}
 
-		ctx.drawImage(plateau.getCartePiocheSelectionne().imgSymbole, plateau.getCartePiocheSelectionne().getX() + 18, plateau.getCartePiocheSelectionne().getY() + 75, 92, 49);
+		ctx.drawImage(getImage(plateau.getCartePiocheSelectionne()), plateau.getCartePiocheSelectionne().getX() + 18, plateau.getCartePiocheSelectionne().getY() + 75, 92, 49);
 		ctx.fillStyle = plateau.getCartePiocheSelectionne().couleur;
 		ctx.fillText(plateau.getCartePiocheSelectionne().getNom(), plateau.getCartePiocheSelectionne().getX() + 5, plateau.getCartePiocheSelectionne().getY() + 25);
 		
@@ -213,7 +234,7 @@ const dessinerUneCarte = (carte, plateau, ctx) => {
 		ctx.drawImage(imgCarte, carte.getX(), carte.getY(), 120, 200);
 	}
 
-	ctx.drawImage(carte.imgSymbole, carte.getX() + 18, carte.getY() + 75, 92, 49);
+	ctx.drawImage(getImage(carte), carte.getX() + 18, carte.getY() + 75, 92, 49);
 
 	if(carte !== undefined)
 	{

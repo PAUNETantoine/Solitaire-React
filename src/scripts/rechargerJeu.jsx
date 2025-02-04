@@ -1,9 +1,9 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9.5 Beta
-Date    : 29/01/25
+Version : 1.0
+Date    : 04/02/25
 --------------------
-File : rechargerJeu
+Script qui permet de relancer une partie et de régénérer le plateau.
 */
 
 const rechargerJeu = (plateau) => {

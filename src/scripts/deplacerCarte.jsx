@@ -1,21 +1,21 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9.5 Beta
-Date    : 29/01/25
+Version : 1.0
+Date    : 04/02/25
 --------------------
 File : deplacerCartes
 */
 
 const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
-	
+
 	if(carteDep === null || carteDep === undefined) //Si on essaye de deplacer une case vide
 	{
-		return;
+		return false;
 	}
 
 	if(carteArr === null || carteArr === undefined)
 	{
-		return;
+		return false;
 	}
 
 
@@ -36,16 +36,18 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 			{
 				plateau.tabColonnes[indexCarteDep][0].setEstRetournee(true);
 			}
-			return;
 
-		}else if(estSurCaseVide(carteDep, carteArr ,plateau)) //Si on essaye de placer autre chose qu'un AS alors on retourne
+			return true;
+
+
+		}else if(estSurCaseVide(carteDep, carteArr, plateau)) //Si on essaye de placer autre chose qu'un AS alors on retourne
 		{
-			return;
+			return false;
 		}
 
 		if(plateau.tabFin[carteArr][0].getNombre() !== carteDep.getNombre() - 1 || plateau.tabFin[carteArr][0].getForme() !== carteDep.getForme()) //Si la carte qu'on met est bien le nombre au dessus de l'ancien et la forme est bien la même
 		{
-			return;
+			return false;
 		}
 
 		plateau.tabFin[carteArr].unshift(plateau.tabColonnes[plateau.getIndexColonneCarte(carteDep)].shift());
@@ -55,7 +57,8 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 		{
 			plateau.tabColonnes[indexCarteDep][0].setEstRetournee(true);
 		}
-		return;
+
+		return true;
 	}
 
 	if(location === "FIN-PIOCHE")
@@ -68,16 +71,17 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 			plateau.tabFin[carteArr][0].setEstRetournee(true);
 			plateau.setCartePiocheSelectionne(plateau.cartes.shift()); 
 			plateau.setCartePiocheEstSelectionne(false);
-			return;
+
+			return true;
 
 		}else if(plateau.tabFin[carteArr][0] === undefined && plateau.getCartePiocheSelectionne().getNombre() !== 1) //Si on essaye de placer autre chose qu'un AS alors on retourne
 		{
-			return;
+			return false;
 		}
 
 		if(plateau.tabFin[carteArr][0].getNombre() !== plateau.getCartePiocheSelectionne().getNombre() - 1 || plateau.tabFin[carteArr][0].getForme() !== carteDep.getForme()) //Si la carte qu'on met est bien le nombre au dessus de l'ancien
 		{
-			return;
+			return false;
 		}
 
 
@@ -87,7 +91,8 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 		plateau.setCartePiocheSelectionne(plateau.cartes.shift());
 
 		plateau.setCartePiocheEstSelectionne(false);
-		return;
+
+		return true;
 	}
 	
 	
@@ -96,7 +101,7 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 	{
 		if(carteDep !== null && carteDep !== undefined && carteDep.getNombre() !== 13) //Seulement les rois peuvent être sur les cases vides
 		{
-			return;
+			return false;
 		}
 
 		if(location === "PIOCHE")
@@ -105,19 +110,21 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 			plateau.setCartePiocheSelectionne(plateau.cartes.shift());
 			plateau.setCartePiocheEstSelectionne(false);
 			plateau.tabColonnes[carteArr][0].setEstRetournee(true);
-			return;
+
+			return true;
 		}
 
 		if(location === "FINversCOLONNES")
 		{
 			plateau.tabColonnes[carteArr].unshift(plateau.tabFin[plateau.getIndexFinCarte(carteDep)].shift());
 			plateau.setCarteFinSelectionne(null);
-			return;
+
+			return true;
 		}
 
 		if(plateau.tabColonnes[indexCarteDep] === undefined)
 		{
-			return;
+			return false;
 		}
 
 		const tmpElemts = plateau.tabColonnes[indexCarteDep].splice(0,indexYCarteDep+1);
@@ -137,7 +144,8 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 		}
 
 		plateau.setCarteColonneSelectionne(null);
-		return;
+
+		return true;
 	}
 
 	let indexCarteArr = plateau.getIndexColonneCarte(carteArr);
@@ -145,19 +153,27 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 
 	if(carteDep.getNombre() !== 1 && carteArr === undefined && location === "FIN") //Si c'est pas un AS et qu'on le pose sur la case vide de la pile
 	{
-		return;
+		return false;
 	}
 
 
 
 	if(carteDep.getCouleur() === carteArr.getCouleur())
 	{
-		return;
+		return false;
 	}
 
 	if(carteDep.getNombre() !== carteArr.getNombre() - 1)
 	{
-		return;
+		return false;
+	}
+
+	if(location === "FINversCOLONNES")
+	{
+		plateau.tabColonnes[plateau.getIndexColonneCarte(carteArr)].unshift(plateau.tabFin[plateau.getIndexFinCarte(carteDep)].shift());
+		plateau.setCarteFinSelectionne(null);
+
+		return true;
 	}
 
 
@@ -173,6 +189,7 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 			i--;
 
 		}while(i >= 0);
+
 	}
 
 
@@ -182,23 +199,19 @@ const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
 		plateau.tabColonnes[indexCarteArr][0].setEstRetournee(true);
 		plateau.setCartePiocheSelectionne(plateau.cartes.shift());
 		plateau.setCartePiocheEstSelectionne(false);
-		return;
-	}
 
-	if(location === "FINversCOLONNES")
-	{
-		plateau.tabColonnes[indexCarteArr].unshift(plateau.tabFin[plateau.getIndexFinCarte(carteDep)].shift())
-		plateau.setCarteFinSelectionne(null);
-		return;
+		return true;
 	}
 
 
-	if(plateau.tabColonnes[indexCarteDep][0] !== undefined)
+	if(plateau.tabColonnes[indexCarteDep] !== undefined && plateau.tabColonnes[indexCarteDep][0] !== undefined)
 	{
 		plateau.tabColonnes[indexCarteDep][0].setEstRetournee(true);
 	}
 
 	plateau.setCarteColonneSelectionne(null);
+
+	return true;
 }
 
 

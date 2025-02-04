@@ -1,3 +1,10 @@
+/*@author : Antoine PAUNET
+Version : 1.0
+Date    : 04/02/25
+--------------------
+Composant permettant de lancer la partie au lancement de la page
+*/
+
 function StartGame({handleGameStart})
 {
     return (

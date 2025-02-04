@@ -1,7 +1,14 @@
+/*@author : Antoine PAUNET
+Version : 1.0
+Date    : 04/02/25
+--------------------
+Script permettant de gérer les clics gauches sur le canva
+*/
+
 import handleDeplacerCarte from "./deplacerCarte";
 import { clicEstDansColonnes, clicEstDansPile, clicEstDansPioche } from "./Utile";
 
-const piocheClick = (x, y, plateau) => {
+const piocheClick = (x, y, plateau, annulerCoup) => {
 	let canvaFrame = document.getElementById("canvaFrame");
 
 	if(x > 130)
@@ -18,6 +25,8 @@ const piocheClick = (x, y, plateau) => {
 
 		plateau.setCartePiocheEstSelectionne(false);
 
+		return true;
+
 	}else if(x < 121)
 	{
 		if(plateau.getCartePiocheEstSelectionne())
@@ -27,13 +36,15 @@ const piocheClick = (x, y, plateau) => {
 		{
 			plateau.setCartePiocheEstSelectionne(true);
 		}
+
+		return false;
 	}
 };
 
 
 
 
-const colonneClick = (x, y, plateau) => {
+const colonneClick = (x, y, plateau, annulerCoup) => {
 	let indexX = Math.floor(x/130);
 	let indexY = Math.floor(y/30);
 
@@ -50,6 +61,11 @@ const colonneClick = (x, y, plateau) => {
 		}
 	}
 
+	if(plateau.tabColonnes[indexX][indexY] !== undefined && !plateau.tabColonnes[indexX][indexY].getEstRetournee())
+	{
+		return;
+	}
+
 	//Si c'est  de la pioche vers les colonnes
 	if(plateau.getCartePiocheSelectionne() !== null && plateau.getCarteColonneSelectionne() === null && plateau.getCartePiocheEstSelectionne() === true)
 	{
@@ -57,13 +73,12 @@ const colonneClick = (x, y, plateau) => {
 
 		if(plateau.tabColonnes[indexX][indexY] === undefined)
 		{
-			handleDeplacerCarte(carteDep, indexX, "PIOCHE", plateau);
-			return;
+			return handleDeplacerCarte(carteDep, indexX, "PIOCHE", plateau, annulerCoup);
 		}
 
 		const carteArr = plateau.tabColonnes[indexX][indexY];
-		handleDeplacerCarte(carteDep, carteArr, "PIOCHE", plateau);
-		return;
+		return handleDeplacerCarte(carteDep, carteArr, "PIOCHE", plateau, annulerCoup);
+
 	}
 
 	//Si c'est de la pile vers les colonnes
@@ -73,13 +88,12 @@ const colonneClick = (x, y, plateau) => {
 
 		if(plateau.tabColonnes[indexX][indexY] === undefined)
 		{
-			handleDeplacerCarte(carteDep, indexX, "FINversCOLONNES", plateau);
-			return;
+			return handleDeplacerCarte(carteDep, indexX, "FINversCOLONNES", plateau, annulerCoup);
 		}
 
 		const carteArr = plateau.tabColonnes[indexX][indexY];
-		handleDeplacerCarte(carteDep, carteArr, "FINversCOLONNES", plateau);
-		return;
+
+		return handleDeplacerCarte(carteDep, carteArr, "FINversCOLONNES", plateau, annulerCoup);
 	}
 
 
@@ -88,8 +102,7 @@ const colonneClick = (x, y, plateau) => {
 	if(plateau.tabColonnes[indexX][indexY] === undefined) //Si clic sur une colonne vide
 	{
 		const carteDep = plateau.getCarteColonneSelectionne();
-		handleDeplacerCarte(carteDep, indexX, "COLONNES", plateau);
-		return;
+		return handleDeplacerCarte(carteDep, indexX, "COLONNES", plateau, annulerCoup);
 	}
 
 	if(plateau.getCarteColonneSelectionne() !== null)
@@ -99,9 +112,9 @@ const colonneClick = (x, y, plateau) => {
 
 		if(carteArr === undefined) //Si clic sur colonne vide
 		{
-			handleDeplacerCarte(carteDep, indexX, "COLONNES", plateau);
+			return handleDeplacerCarte(carteDep, indexX, "COLONNES", plateau, annulerCoup);
 		}else{
-			handleDeplacerCarte(carteDep, carteArr, "COLONNES", plateau);
+			return handleDeplacerCarte(carteDep, carteArr, "COLONNES", plateau, annulerCoup);
 		}
 
 	}else{
@@ -111,20 +124,19 @@ const colonneClick = (x, y, plateau) => {
 }
 
 
-const pileClick = (x, y, plateau) => {
+const pileClick = (x, y, plateau, annulerCoup) => {
 
 	const indexCarte = Math.floor(x/130);
 
 	if(plateau.getCarteColonneSelectionne() !== null)
 	{
-		handleDeplacerCarte(plateau.getCarteColonneSelectionne(), indexCarte, "FIN-COLONNE", plateau);
-		return;
+		return handleDeplacerCarte(plateau.getCarteColonneSelectionne(), indexCarte, "FIN-COLONNE", plateau, annulerCoup);
+
 	}
 
 	if(plateau.getCartePiocheEstSelectionne() && plateau.getCartePiocheSelectionne() !== null)
 	{
-		handleDeplacerCarte(plateau.getCartePiocheSelectionne(), indexCarte, "FIN-PIOCHE", plateau);
-		return;
+		return handleDeplacerCarte(plateau.getCartePiocheSelectionne(), indexCarte, "FIN-PIOCHE", plateau, annulerCoup);
 	}
 
 	plateau.setCarteFinSelectionne(plateau.tabFin[indexCarte][0])
@@ -133,23 +145,23 @@ const pileClick = (x, y, plateau) => {
 
 //Cette methode permet d'appeler les autres fonctions selon la position du clic
 /*Ici Action représente si on clic ou on relache la souris*/
-const gestionClick = (x, y, plateau, mouseUp) => {
+const gestionClick = (x, y, plateau, mouseUp, annulerCoup) => {
 	const canvaFrame = document.getElementById("canvaFrame");
 
 
 	if(clicEstDansPile(x,y)) //Si on clic sur les piles
 	{
-		pileClick((x-(canvaFrame.width / 2 - 235)), y, plateau);
+		return pileClick((x-(canvaFrame.width / 2 - 235)), y, plateau, annulerCoup);
 	}
 
 	if(clicEstDansColonnes(x,y)) //Si on clic sur les colonnes
 	{
-		colonneClick((x-(canvaFrame.width / 2 - 450)), y - 250, plateau)
+		return colonneClick((x-(canvaFrame.width / 2 - 450)), y - 250, plateau, annulerCoup)
 	}
 
 	if(clicEstDansPioche(x,y, mouseUp)) //Si on clic sur la pioche
 	{
-		piocheClick((x-(canvaFrame.width - 250)), y, plateau);
+		return piocheClick((x-(canvaFrame.width - 250)), y, plateau, annulerCoup);
 	}
 }
 

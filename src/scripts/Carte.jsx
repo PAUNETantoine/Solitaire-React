@@ -1,7 +1,7 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9.5 Beta
-Date    : 27/01/25
+Version : 1.0
+Date    : 04/02/25
 --------------------
 File : Class carte
 */
@@ -10,6 +10,28 @@ class Carte{
 
     constructor(nom, nombre, forme, estRetournee)
     {
+        if(nom instanceof Carte) //Constructeur par recopie
+        {
+            this.nom            = nom.nom;
+            this.nombre         = nom.nombre;
+            this.forme          = nom.forme;
+            this.estRetournee   = nom.estRetournee;
+            this.x              = nom.x;
+            this.y              = nom.y;
+        
+            switch(this.forme)
+            {
+                case "Trefle" : this.couleur = "black"; break;
+                case "Pique"  : this.couleur = "black"; break;
+                case "Coeur"  : this.couleur = "red"  ; break;
+                case "Carreau": this.couleur = "red"  ; break;
+            }
+    
+            this.estMouvement  = false; //Si jamais on déplace la carte elle devient true ( permet de passer les cartes au dessus dans le dessin de la frame )
+
+            return;
+        }
+
         this.nom            = nom;
         this.nombre         = nombre;
         this.forme          = forme;
@@ -17,18 +39,15 @@ class Carte{
         this.x              = 0;
         this.y              = 0;
 
-        this.imgSymbole       = new Image();
-
         switch(this.forme)
         {
-            case "Trefle" : this.couleur = "black"; this.imgSymbole.src = process.env.PUBLIC_URL + '/images/Trefle.png'; break;
-            case "Pique"  : this.couleur = "black"; this.imgSymbole.src = process.env.PUBLIC_URL + '/images/Pique.png';  break;
-            case "Coeur"  : this.couleur = "red"  ; this.imgSymbole.src = process.env.PUBLIC_URL + '/images/Coeur.png';  break;
-            case "Carreau": this.couleur = "red"  ; this.imgSymbole.src = process.env.PUBLIC_URL + '/images/Carreau.png';break;
+            case "Trefle" : this.couleur = "black"; break;
+            case "Pique"  : this.couleur = "black"; break;
+            case "Coeur"  : this.couleur = "red"  ; break;
+            case "Carreau": this.couleur = "red"  ; break;
         }
 
         this.estMouvement  = false; //Si jamais on déplace la carte elle devient true ( permet de passer les cartes au dessus dans le dessin de la frame )
-
     }
 
 

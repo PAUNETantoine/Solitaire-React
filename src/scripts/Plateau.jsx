@@ -1,9 +1,9 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9.5 Beta
-Date    : 27/01/25
+Version : 1.0
+Date    : 04/02/25
 --------------------
-File : Class plateau
+Classe plateau qui permet de gérer le déroulement du jeu
 */
 
 import Carte from "./Carte"
@@ -37,10 +37,10 @@ class Plateau
             switch(j)
             {
                 case 1      : nom = "A";    break
-                case 11     : nom = "J"; break;
-                case 12     : nom = "Q"; break;
-                case 13     : nom = "K";   break;
-                default     : nom = j;       break;
+                case 11     : nom = "J";    break;
+                case 12     : nom = "Q";    break;
+                case 13     : nom = "K";    break;
+                default     : nom = j;      break;
 
             }
 

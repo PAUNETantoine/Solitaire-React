@@ -1,9 +1,9 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9.5 Beta
-Date    : 27/01/25
+Version : 1.0
+Date    : 04/02/25
 --------------------
-File : rechargerPage
+Script permettant de recharger la page et de vérifier si toutes les cartes sont bien retournées
 */
 
 import { handleDessinerCarteColonnes, handleDessinerCartesPioche, handleDessinerCartesPilesFin } from "./dessinerCartes";

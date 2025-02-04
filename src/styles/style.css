@@ -1,9 +1,9 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9.5 Beta
-Date    : 24/01/25
+Version : 1.0
+Date    : 04/02/25
 --------------------
-File : css File
+Fichier contenant le css nécessaire au bon déroulement du jeu
 */
 
 
@@ -34,9 +34,8 @@ File : css File
 #zoneBoutons 
 {
     position: absolute;
-    top: 4%;
-    left: 5%;
-    transform: translate(-50%, -50%);
+    top: 1%;
+    left: 1%;
     color: white;
     padding: 20px;
     text-align: center;
@@ -163,16 +162,26 @@ File : css File
     z-index: 1000;
 }
 
-#chronometre
+.txtZones
 {
     position: absolute;
-    top: 88%;
-    left: 2%;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     border-radius: 5px;
     font-family: "Naturaly", sans-serif;
     font-size: 25px;
+}
+
+#chronometre
+{
+    top: 88%;
+    left: 2%;
+}
+
+#nbClics
+{
+    top : 88%;
+    right : 2%;
 }
 
 .zoneGagner

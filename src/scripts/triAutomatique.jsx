@@ -1,9 +1,9 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9.5 Beta
-Date    : 29/01/25
+Version : 1.0
+Date    : 04/02/25
 --------------------
-File : Tri Automatique
+Script permetant de gérer le tri automatique en fin de partie
 */
 
 
@@ -19,10 +19,8 @@ const triAutomatique = async (plateau, setGagner) =>
 
 	while(plateau.tabFin[0].length !== 13 || plateau.tabFin[1].length !== 13 || plateau.tabFin[2].length !== 13 || plateau.tabFin[3].length !== 13)
 	{
-		console.log(i + " i")
 		for(let j = 0 ; j < plateau.tabFin.length ; j++)
 		{
-			console.log(j + " j")
 			if(plateau.tabFin[j].length !== 13)
 			{
 				if(plateau.cartes.length > 0 || plateau.getCartePiocheSelectionne() !== null)
@@ -100,7 +98,8 @@ const triAutomatique = async (plateau, setGagner) =>
 	handleRechargerPage(plateau, true, setGagner);
 
 	document.getElementById("zoneGagner").classList.add("zoneGagner");
-	document.getElementById("tpsFin").innerText = document.getElementById("temps").textContent
+	document.getElementById("tpsFin").innerText = document.getElementById("temps").textContent;
+	document.getElementById("nbCoups").innerText = document.getElementById("nbClicsTxt").textContent;
 }
 
 export default triAutomatique;

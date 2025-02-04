@@ -1,7 +1,7 @@
 /*
 @author : Antoine PAUNET
-Version : 0.9.5 Beta
-Date    : 29/01/25
+Version : 1.0
+Date    : 04/02/25
 --------------------
 File : Comp Chrono
 */
@@ -53,9 +53,8 @@ function Chronometre({jeuLance, gagner})
 	}, [jeuLance]);
 
 	return (
-		<div id="chronometre">
+		<div id="chronometre" className="txtZones">
       		<p id="temps">Temps : {minutes < 10 ? `0${minutes}` : minutes}:{secondes < 10 ? `0${secondes}` : secondes}</p>
-			
 		</div>
 	)
 }

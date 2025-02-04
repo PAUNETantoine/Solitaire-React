@@ -1,3 +1,12 @@
+/*
+@author : Antoine PAUNET
+Version : 1.0
+Date    : 04/02/25
+--------------------
+Composant qui permet de marquer un temps de chargement entre chaques relancement de parties
+*/
+
+
 function ChargementPage()
 {
     return (

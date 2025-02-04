@@ -1,10 +1,19 @@
+/*
+@author : Antoine PAUNET
+Version : 1.0
+Date    : 04/02/25
+--------------------
+Script permettant de gérer les clis droits sur le canva
+*/
+
 import handleDeplacerCarte 						    from "./deplacerCarte";
 import { clicEstDansColonnes, clicEstDansPioche } 	from "./Utile";
 
-const clicDroit = (event, plateau) => {
+const clicDroit = (event, plateau, annulerCoup) => {
 	event.preventDefault();
 	const x = event.clientX;
 	const y = event.clientY;
+	let res = false;
 
 	const canvaFrame = document.getElementById("canvaFrame");
 
@@ -30,7 +39,7 @@ const clicDroit = (event, plateau) => {
 
 		let indexColCouleur = getIndexColCouleur(plateau.getCarteColonneSelectionne(), plateau);
 
-		handleDeplacerCarte(plateau.getCarteColonneSelectionne(), indexColCouleur, "FIN-COLONNE", plateau); //Transfert de colonnes vers FIN
+		res = handleDeplacerCarte(plateau.getCarteColonneSelectionne(), indexColCouleur, "FIN-COLONNE", plateau, annulerCoup); //Transfert de colonnes vers FIN
 
 		plateau.setCarteColonneSelectionne(null);
 
@@ -38,9 +47,10 @@ const clicDroit = (event, plateau) => {
 	{
 		let indexColCouleur = getIndexColCouleur(plateau.getCartePiocheSelectionne(), plateau);
 
-		handleDeplacerCarte(plateau.getCartePiocheSelectionne(), indexColCouleur, "FIN-PIOCHE", plateau); //Transfert de pioche vers FIN
+		res = handleDeplacerCarte(plateau.getCartePiocheSelectionne(), indexColCouleur, "FIN-PIOCHE", plateau, annulerCoup); //Transfert de pioche vers FIN
 	}
-};
+	return res;
+}
 
 
 //On chercher quelle colonne est utilisée pour la couleur selon l'AS
