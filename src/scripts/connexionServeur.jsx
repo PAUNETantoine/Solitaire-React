@@ -3,7 +3,7 @@ import { Plateau } from "./Plateau";
 
 
 //IP du serveur
-const ip = "http://serveur-solitaire-react-production.up.railway.app";
+const ip = "https://serveur-solitaire-react-production.up.railway.app";
 
 const serveurEstOn = async () => {
 	try{
