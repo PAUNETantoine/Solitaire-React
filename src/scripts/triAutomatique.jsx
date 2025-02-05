@@ -23,6 +23,7 @@ const triAutomatique = async (plateau, setGagner) =>
 		{
 			if(plateau.tabFin[j].length !== 13)
 			{
+				console.log(i + " " + j)
 				if(plateau.cartes.length > 0 || plateau.getCartePiocheSelectionne() !== null)
 				{
 					if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && plateau.getCartePiocheSelectionne().getForme() === plateau.tabFin[j][0].getForme() && plateau.getCartePiocheSelectionne().getNombre() === plateau.tabFin[j][0].getNombre() + 1)
@@ -39,6 +40,8 @@ const triAutomatique = async (plateau, setGagner) =>
 					}
 				}
 
+				console.log((plateau.cartes.length > 0 || plateau.getCartePiocheSelectionne() !== null) + " " + (plateau.tabColonnes[i][0] !== undefined && plateau.tabFin[j][0] !== undefined && plateau.tabColonnes[i][0].getForme() === plateau.tabFin[j][0].getForme() && plateau.tabColonnes[i][0].getNombre() === plateau.tabFin[j][0].getNombre() + 1))
+
 				if(plateau.tabColonnes[i][0] !== undefined && plateau.tabFin[j][0] !== undefined && plateau.tabColonnes[i][0].getForme() === plateau.tabFin[j][0].getForme() && plateau.tabColonnes[i][0].getNombre() === plateau.tabFin[j][0].getNombre() + 1)
 				{
 					await new Promise(resolve => {
@@ -54,6 +57,7 @@ const triAutomatique = async (plateau, setGagner) =>
 	
 						while(plateau.tabFin[j][0] === undefined)
 						{
+							console.log("boucle")
 							if(plateau.tabColonnes[v][0].getNombre() === 1)
 							{
 								await new Promise(resolve => {

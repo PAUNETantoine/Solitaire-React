@@ -54,6 +54,7 @@ const handleDessinerCartesPilesFin = (plateau) => {
 		{
 			if(!plateau.sourisClic)
 			{
+				console.log("Ok")
 				plateau.tabFin[i][0].setX(xDebutPiles + (i*130));
 				plateau.tabFin[i][0].setY(0);
 			}
@@ -111,7 +112,7 @@ const handleDessinerCarteColonnes = (plateau, jeuLance) => {
 
 			if(plateau.tabColonnes[i][j] !== undefined)
 			{
-				if(!jeuLance && !plateau.sourisClic)
+				if(jeuLance && !plateau.sourisClic)
 				{
 					plateau.tabColonnes[i][j].setX(xDebutColonnes + (i*130));
 					plateau.tabColonnes[i][j].setY(yDebutColonnes + (plateau.tabColonnes[i].length-1-j)*30);

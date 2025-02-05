@@ -10,7 +10,7 @@ class Carte{
 
     constructor(nom, nombre, forme, estRetournee)
     {
-        if(nom instanceof Carte) //Constructeur par recopie
+        if(nom instanceof Carte || nom instanceof Object) //Constructeur par recopie
         {
             this.nom            = nom.nom;
             this.nombre         = nom.nombre;

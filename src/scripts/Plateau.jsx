@@ -11,18 +11,33 @@ import Carte from "./Carte"
 class Plateau 
 {
 
-    constructor()
+    constructor(data)
     {
-        this.cartes                     = this.initCartes();
-        this.tabColonnes                = [];
-        this.tabFin                     = [[],[],[],[]]
+        if(data === undefined)
+        {
+            this.cartes                     = this.initCartes();
+            this.tabColonnes                = [];
+            this.tabFin                     = [[],[],[],[]]
+        }else
+        {
+            this.cartes = data.cartes;
+            this.tabColonnes = data.tabColonnes;
+            this.tabFin = data.tabFin;
+            this.estGagnant = true;
+            this.initCartesPlateauGagnant();
+        }
+
+        this.sourisClic = false;
         this.cartePiocheSelectionne     = null;
         this.carteColonnesSelectionne   = null;
         this.carteFinSelectionne        = null;
         this.cartePiocheEstSelectionne  = false;
-
-        this.sourisClic = false;
-        this.melangerCartes();
+        this.estGagnant = false;
+        
+        if(data === undefined)
+        {
+            this.melangerCartes();
+        }
     }
 
     /*Méthode permettant d'initialiser les cartes du deck*/
@@ -51,6 +66,23 @@ class Plateau
         }
 
         return tempTabCartes;
+    }
+
+    initCartesPlateauGagnant()
+    {
+        for(let i = 0 ; i < this.tabColonnes.length ; i++)
+        {
+            for(let j = 0 ; j < this.tabColonnes[i].length ; j++)
+            {
+                this.tabColonnes[i][j] = new Carte(this.tabColonnes[i][j])
+            }
+        }
+
+
+        for(let i = 0 ; i < this.cartes.length ; i++)
+        {
+            this.cartes[i] = new Carte(this.cartes[i]);
+        }
     }
 
 

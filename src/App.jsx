@@ -29,22 +29,57 @@ import NombreDeClics    from "./composants/NombreDeClics";
 
 /*Import des scripts utiles*/
 import gestionClick from "./scripts/ClicGauche";
+import { envoyerPlateauGagnant, recevoirPlateauGagnant, serveurEstOn } from "./scripts/connexionServeur";
 
 
 function App()
 {
     //Les états
-    const [plateau,         setPlateau ] = useState(null);
-    const [annulerCoup,  setAnnulerCoup] = useState(new AnnulerCoup(true));
-    const [jeuLance,        setJeuLance] = useState(false);
-    const [gagner,          setGagner  ] = useState(false);
+    const [plateau,          setPlateau ] = useState(null);
+    const [annulerCoup,   setAnnulerCoup] = useState(new AnnulerCoup(true));
+    const [jeuLance,         setJeuLance] = useState(false);
+    const [gagner,           setGagner  ] = useState(false);
+    const [estAleatoire, setEstAleatoire] = useState(null);
 
 
     //Les comportements
     useEffect(() => {
-        const nouveauPlateau = new Plateau();
-        setPlateau(nouveauPlateau);
-    }, []);
+        const creerPlateau = async () => 
+        {
+            if(plateau === null && estAleatoire !== null && !estAleatoire)
+            {
+                document.getElementById("chargementPage").classList.add("chargementPage");
+                if(await serveurEstOn())
+                {
+                    let tmpP = await recevoirPlateauGagnant();
+                    document.getElementById("chargementPage").classList.remove("chargementPage");
+
+                    if(tmpP === null)
+                    {
+                        alert("Aucune partie gagnante n'a été créée, lancement en mode aléatoire")
+                        setEstAleatoire(true);
+                        setPlateau(new Plateau());
+                    }
+                    else{
+                        setPlateau(tmpP);
+                    }
+                }else{
+                    document.getElementById("chargementPage").classList.remove("chargementPage");
+                    alert("Serveur déconnecté, lancement de la partie en mode aléatoire.")
+                    setEstAleatoire(true);
+                    setPlateau(new Plateau());
+                }
+            }
+            else{
+                if(plateau === null && estAleatoire !== null && estAleatoire)
+                {
+                    setPlateau(new Plateau());
+                }
+            }
+        }
+
+        creerPlateau();
+    }, [jeuLance, estAleatoire]);
 
 
     useEffect(() => {
@@ -52,6 +87,12 @@ function App()
         {
             document.getElementById("rangementAuto").classList.remove("cacher");
             document.getElementById("rangementAuto").classList.add("boutons");
+
+            if(estAleatoire)
+            {
+                envoyerPlateauGagnant(annulerCoup.plateauDepart); //Envoyer au serveur un plateau gagnant
+            }
+
         }else{
             document.getElementById("zoneGagner").classList.remove("zoneGagner");
             document.getElementById("rangementAuto").classList.remove("boutons");
@@ -60,6 +101,13 @@ function App()
     }, [gagner])
 
 
+    useEffect(() => {
+        if(plateau !== null && jeuLance)
+        {
+            handleRechargerPage(plateau, true, setGagner); //Jeu lance a true pour bon affichage des coordonnées
+            annulerCoup.rechargerJeu(plateau);
+        }
+    }, [plateau, jeuLance])
 
     //Gestion des clics
     useEffect(() => {
@@ -198,32 +246,34 @@ function App()
     }
 
 
-    const handleGameStart = () => {
-        document.getElementById('zoneLancementJeu').classList.add('cacher');;
+    const handleGameStart = (estAleatoire) => {
+        document.getElementById('zoneLancementJeu').classList.add('cacher');
+
         if(!jeuLance)
         {
-            handleRechargerPage(plateau, jeuLance, setGagner);
             setJeuLance(true);
-            annulerCoup.ajouterCoup(plateau);
+            setEstAleatoire(estAleatoire);
         }
     }
 
 
-    const handleGameRefresh = () => {
+    const handleGameRefresh = async () => {
         document.getElementById("zoneGagner").classList.remove("zoneGagner")
         document.getElementById("chargementPage").classList.add("chargementPage");
         document.getElementById("rangementAuto").classList.add("cacher");
 
         setJeuLance(false);
         setGagner(false);
-        rechargerJeu(plateau);
+
+        rechargerJeu(plateau, estAleatoire);
+
 
         setTimeout(() => {
             document.getElementById("chargementPage").classList.remove("chargementPage");
             setJeuLance(true);
         }, 1000)
-        
-        handleRechargerPage(plateau, false, setGagner);
+
+        handleRechargerPage(plateau, true, setGagner);
         annulerCoup.rechargerJeu(plateau);
     }
 

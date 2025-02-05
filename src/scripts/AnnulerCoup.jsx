@@ -7,6 +7,7 @@ Classe annulerCoup permettant de sauvegarder les anciens plateaux pour revenir e
 
 import { copierTableauColonnes, copierCartes, copierTableauFin } from "./Utile";
 import Carte from "./Carte";
+import { Plateau } from "./Plateau";
 
 class AnnulerCoup 
 {
@@ -22,7 +23,7 @@ class AnnulerCoup
 
 		if(this.estParent)
 		{
-			this.plateauDepart = new AnnulerCoup(false); //Permet de sauvegarder le plateau à l'état 0
+			this.plateauDepart = new Plateau(); //Permet de sauvegarder le plateau à l'état 0
 		}
 
 		this.autoSort = false;
@@ -62,8 +63,6 @@ class AnnulerCoup
 
 	ajouterCoup(plateau)
 	{
-		console.log(this)
-
 		if(this.autoSort)
 		{
 			return;
@@ -71,7 +70,9 @@ class AnnulerCoup
 
 		if(this.indexCoup === -1 && this.estParent)
 		{
-			this.plateauDepart.ajouterCoup(plateau);
+			this.plateauDepart.tabColonnes = copierTableauColonnes(plateau.tabColonnes);
+			this.plateauDepart.tabFin = copierTableauFin(plateau.tabFin);
+			this.plateauDepart.cartes = copierCartes(plateau.cartes);
 		}
 
 		this.indexCoup++;
@@ -100,7 +101,7 @@ class AnnulerCoup
 
 		if(this.estParent)
 		{
-			this.plateauDepart = new AnnulerCoup(false); //Permet de sauvegarder le plateau à l'état 0
+			this.plateauDepart = new Plateau(); //Permet de sauvegarder le plateau à l'état 0
 		}
 
 		this.afficherNbCoups();
