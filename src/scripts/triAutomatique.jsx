@@ -65,7 +65,7 @@ const triAutomatique = async (plateau, setGagner) =>
 							}else{
 								if(plateau.cartes.length > 0 || plateau.getCartePiocheSelectionne() !== null)
 								{
-									if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && plateau.getCartePiocheSelectionne().getForme() === plateau.tabFin[j][0].getForme() && plateau.getCartePiocheSelectionne().getNombre() === plateau.tabFin[j][0].getNombre() + 1)
+									if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && plateau.getCartePiocheSelectionne().getNombre() === 1)
 									{
 										await new Promise(resolve => {
 											setTimeout(() => {

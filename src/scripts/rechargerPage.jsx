@@ -33,7 +33,7 @@ const checkVictoire = (plateau, setGagner, jeuLance) =>
 	{
 		if(plateau.tabColonnes[i][plateau.tabColonnes[i].length-1] !== undefined && !plateau.tabColonnes[i][plateau.tabColonnes[i].length-1].getEstRetournee())
 		{
-			setGagner(false)
+			setGagner(false);
 			return
 		}
 	}
