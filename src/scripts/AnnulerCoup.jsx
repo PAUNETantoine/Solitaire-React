@@ -10,13 +10,20 @@ import Carte from "./Carte";
 
 class AnnulerCoup 
 {
-	constructor()
+	constructor(parent) //Parent permet de avoir si c'est bien la classe principale et non celle qui permet de save
 	{
 		this.indexCoup = -1;
 		this.tabColonnesCoup = [];
 		this.tabFinCoup = [];
 		this.cartesCoup = [];
 		this.cartePiocheSelectionneCoup = [];
+
+		this.estParent = parent;
+
+		if(this.estParent)
+		{
+			this.plateauDepart = new AnnulerCoup(false); //Permet de sauvegarder le plateau à l'état 0
+		}
 
 		this.autoSort = false;
 	}
@@ -55,9 +62,16 @@ class AnnulerCoup
 
 	ajouterCoup(plateau)
 	{
+		console.log(this)
+
 		if(this.autoSort)
 		{
 			return;
+		}
+
+		if(this.indexCoup === -1 && this.estParent)
+		{
+			this.plateauDepart.ajouterCoup(plateau);
 		}
 
 		this.indexCoup++;
@@ -75,7 +89,7 @@ class AnnulerCoup
 		this.afficherNbCoups()
 	}
 
-	rechargerJeu()
+	rechargerJeu(plateau)
 	{
 		this.indexCoup = -1;
 		this.tabColonnesCoup = [];
@@ -84,7 +98,13 @@ class AnnulerCoup
 		this.cartePiocheSelectionneCoup = [];
 		this.autoSort = false;
 
-		this.afficherNbCoups()
+		if(this.estParent)
+		{
+			this.plateauDepart = new AnnulerCoup(false); //Permet de sauvegarder le plateau à l'état 0
+		}
+
+		this.afficherNbCoups();
+		this.ajouterCoup(plateau)
 	}
 
 

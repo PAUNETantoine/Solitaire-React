@@ -35,7 +35,7 @@ function App()
 {
     //Les états
     const [plateau,         setPlateau ] = useState(null);
-    const [annulerCoup,  setAnnulerCoup] = useState(new AnnulerCoup());
+    const [annulerCoup,  setAnnulerCoup] = useState(new AnnulerCoup(true));
     const [jeuLance,        setJeuLance] = useState(false);
     const [gagner,          setGagner  ] = useState(false);
 
@@ -217,13 +217,14 @@ function App()
         setJeuLance(false);
         setGagner(false);
         rechargerJeu(plateau);
-        annulerCoup.rechargerJeu();
 
         setTimeout(() => {
-            handleRechargerPage(plateau, false, setGagner);
             document.getElementById("chargementPage").classList.remove("chargementPage");
             setJeuLance(true);
         }, 1000)
+        
+        handleRechargerPage(plateau, false, setGagner);
+        annulerCoup.rechargerJeu(plateau);
     }
 
     const handleAutoStore = () => {
