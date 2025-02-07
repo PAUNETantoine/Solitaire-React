@@ -271,6 +271,7 @@ function App()
         setTimeout(() => {
             document.getElementById("chargementPage").classList.remove("chargementPage");
             setJeuLance(true);
+            handleRechargerPage(plateau, true, setGagner);
         }, 1000)
 
         handleRechargerPage(plateau, true, setGagner);

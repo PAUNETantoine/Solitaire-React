@@ -14,87 +14,79 @@ import handleRechargerPage from "./rechargerPage";
 
 const triAutomatique = async (plateau, setGagner) => 
 {
-
-	let i = 0;
-
 	while(plateau.tabFin[0].length !== 13 || plateau.tabFin[1].length !== 13 || plateau.tabFin[2].length !== 13 || plateau.tabFin[3].length !== 13)
 	{
-		for(let j = 0 ; j < plateau.tabFin.length ; j++)
+		for(let i = 0 ; i < plateau.tabColonnes.length ; i++)
 		{
-			if(plateau.tabFin[j].length !== 13)
+			for(let j = 0 ; j < plateau.tabFin.length ; j++)
 			{
-				console.log(i + " " + j)
-				if(plateau.cartes.length > 0 || plateau.getCartePiocheSelectionne() !== null)
+				if(plateau.tabFin[j].length !== 13)
 				{
-					if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && plateau.getCartePiocheSelectionne().getForme() === plateau.tabFin[j][0].getForme() && plateau.getCartePiocheSelectionne().getNombre() === plateau.tabFin[j][0].getNombre() + 1)
+					if(plateau.cartes.length > 0 || plateau.getCartePiocheSelectionne() !== null)
 					{
-						await new Promise(resolve => {
-							setTimeout(() => {
-								handleDeplacerCarte(plateau.getCartePiocheSelectionne(), j, "FIN-PIOCHE", plateau);
-								resolve();
-							}, 300);
-						});
-					}else{
-						plateau.cartes.push(plateau.getCartePiocheSelectionne());
-						plateau.setCartePiocheSelectionne(plateau.cartes.shift());
-					}
-				}
-
-				console.log((plateau.cartes.length > 0 || plateau.getCartePiocheSelectionne() !== null) + " " + (plateau.tabColonnes[i][0] !== undefined && plateau.tabFin[j][0] !== undefined && plateau.tabColonnes[i][0].getForme() === plateau.tabFin[j][0].getForme() && plateau.tabColonnes[i][0].getNombre() === plateau.tabFin[j][0].getNombre() + 1))
-
-				if(plateau.tabColonnes[i][0] !== undefined && plateau.tabFin[j][0] !== undefined && plateau.tabColonnes[i][0].getForme() === plateau.tabFin[j][0].getForme() && plateau.tabColonnes[i][0].getNombre() === plateau.tabFin[j][0].getNombre() + 1)
-				{
-					await new Promise(resolve => {
-						setTimeout(() => {
-							  handleDeplacerCarte(plateau.tabColonnes[i][0], j, "FIN-COLONNE", plateau);
-							  resolve();
-						}, 300);
-					})
-				}else{
-					if(plateau.tabFin[j][0] === undefined)
-					{
-						let v = 0;
-	
-						while(plateau.tabFin[j][0] === undefined)
+						console.log(plateau.getCartePiocheSelectionne())
+						if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && plateau.getCartePiocheSelectionne().getForme() === plateau.tabFin[j][0].getForme() && plateau.getCartePiocheSelectionne().getNombre() === plateau.tabFin[j][0].getNombre() + 1)
 						{
-							console.log("boucle")
-							if(plateau.tabColonnes[v][0].getNombre() === 1)
-							{
-								await new Promise(resolve => {
-									setTimeout(() => {
-										  handleDeplacerCarte(plateau.tabColonnes[i][0], j, "FIN-COLONNE", plateau);
-										  resolve();
-									}, 300);
-								});
-							}else{
-								if(plateau.cartes.length > 0 || plateau.getCartePiocheSelectionne() !== null)
-								{
-									if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && plateau.getCartePiocheSelectionne().getNombre() === 1)
-									{
-										await new Promise(resolve => {
-											setTimeout(() => {
-												handleDeplacerCarte(plateau.getCartePiocheSelectionne(), j, "FIN-PIOCHE", plateau);
-												resolve();
-											}, 300);
-										});
-									}else{
-										plateau.cartes.push(plateau.getCartePiocheSelectionne());
-										plateau.setCartePiocheSelectionne(plateau.cartes.shift());
-									}
-								}
-							}
-							v++;
+							await handleDeplacerCarte(plateau.getCartePiocheSelectionne(), j, "FIN-PIOCHE", plateau);
+							await new Promise(resolve => {
+								setTimeout(() => {
+									resolve();
+								}, 300);
+							});
+						}else{
+							console.log(plateau.cartes)
+							plateau.cartes.push(plateau.getCartePiocheSelectionne());
+							plateau.setCartePiocheSelectionne(plateau.cartes.shift());
 						}
 					}
+	
+	
+					if(plateau.tabColonnes[i][0] !== undefined && plateau.tabFin[j][0] !== undefined && plateau.tabColonnes[i][0].getForme() === plateau.tabFin[j][0].getForme() && plateau.tabColonnes[i][0].getNombre() === plateau.tabFin[j][0].getNombre() + 1)
+					{
+						await handleDeplacerCarte(plateau.tabColonnes[i][0], j, "FIN-COLONNE", plateau);
+						await new Promise(resolve => {
+							setTimeout(() => {
+								  resolve();
+							}, 300);
+						})
+					}else{
+						if(plateau.tabFin[j][0] === undefined)
+						{
+							let v = 0;
+		
+							while(plateau.tabFin[j][0] === undefined)
+							{
+								if(plateau.tabColonnes[v][0].getNombre() === 1)
+								{
+									await handleDeplacerCarte(plateau.tabColonnes[i][0], j, "FIN-COLONNE", plateau);
+									await new Promise(resolve => {
+										setTimeout(() => {
+											  resolve();
+										}, 300);
+									});
+								}else{
+									if(plateau.cartes.length > 0 || plateau.getCartePiocheSelectionne() !== null)
+									{
+										if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && plateau.getCartePiocheSelectionne().getNombre() === 1)
+										{
+											await handleDeplacerCarte(plateau.getCartePiocheSelectionne(), j, "FIN-PIOCHE", plateau);
+											await new Promise(resolve => {
+												setTimeout(() => {
+													resolve();
+												}, 300);
+											});
+										}else{
+											plateau.cartes.push(plateau.getCartePiocheSelectionne());
+											plateau.setCartePiocheSelectionne(plateau.cartes.shift());
+										}
+									}
+								}
+								v++;
+							}
+						}
+					}
+					await handleRechargerPage(plateau, true, setGagner);
 				}
-				handleRechargerPage(plateau, true, setGagner);
-			}
-
-			i++;
-
-			if(i === plateau.tabColonnes.length)
-			{
-				i = 0;
 			}
 		}
 	}

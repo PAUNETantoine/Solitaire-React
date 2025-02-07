@@ -6,7 +6,7 @@ Date    : 04/02/25
 File : deplacerCartes
 */
 
-const handleDeplacerCarte = (carteDep, carteArr, location, plateau) => {
+const handleDeplacerCarte = async(carteDep, carteArr, location, plateau) => {
 
 	if(carteDep === null || carteDep === undefined) //Si on essaye de deplacer une case vide
 	{

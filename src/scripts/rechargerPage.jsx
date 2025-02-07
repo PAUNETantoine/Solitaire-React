@@ -8,7 +8,7 @@ Script permettant de recharger la page et de vérifier si toutes les cartes sont
 
 import { handleDessinerCarteColonnes, handleDessinerCartesPioche, handleDessinerCartesPilesFin } from "./dessinerCartes";
 
-const handleRechargerPage = (plateau, jeuLance, setGagner) => {
+const handleRechargerPage = async (plateau, jeuLance, setGagner) => {
 
 	checkVictoire(plateau, setGagner, jeuLance);
 

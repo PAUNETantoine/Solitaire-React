@@ -54,7 +54,6 @@ const handleDessinerCartesPilesFin = (plateau) => {
 		{
 			if(!plateau.sourisClic)
 			{
-				console.log("Ok")
 				plateau.tabFin[i][0].setX(xDebutPiles + (i*130));
 				plateau.tabFin[i][0].setY(0);
 			}
@@ -69,7 +68,7 @@ const handleDessinerCartesPilesFin = (plateau) => {
 				}
 
 
-				ctx.drawImage(getImage(plateau.tabFin[i][0]), plateau.tabFin[i][0].getX() + 18, plateau.tabFin[i][0].getY() + 75, 92, 49);
+				ctx.drawImage(getImage(plateau.tabFin[i][0]), plateau.tabFin[i][0].getX(), plateau.tabFin[i][0].getY() + 68, 120, 64);
 
 				ctx.fillStyle = plateau.tabFin[i][0].couleur;
 
@@ -196,7 +195,7 @@ const handleDessinerCartesPioche = (plateau) => {
 			ctx.drawImage(imgCarte, plateau.getCartePiocheSelectionne().getX(), plateau.getCartePiocheSelectionne().getY(), 120, 200);
 		}
 
-		ctx.drawImage(getImage(plateau.getCartePiocheSelectionne()), plateau.getCartePiocheSelectionne().getX() + 18, plateau.getCartePiocheSelectionne().getY() + 75, 92, 49);
+		ctx.drawImage(getImage(plateau.getCartePiocheSelectionne()), plateau.getCartePiocheSelectionne().getX(), plateau.getCartePiocheSelectionne().getY() + 68, 120, 64);
 		ctx.fillStyle = plateau.getCartePiocheSelectionne().couleur;
 		ctx.fillText(plateau.getCartePiocheSelectionne().getNom(), plateau.getCartePiocheSelectionne().getX() + 5, plateau.getCartePiocheSelectionne().getY() + 25);
 		
@@ -235,7 +234,7 @@ const dessinerUneCarte = (carte, plateau, ctx) => {
 		ctx.drawImage(imgCarte, carte.getX(), carte.getY(), 120, 200);
 	}
 
-	ctx.drawImage(getImage(carte), carte.getX() + 18, carte.getY() + 75, 92, 49);
+	ctx.drawImage(getImage(carte), carte.getX(), carte.getY() + 68, 120, 64);
 
 	if(carte !== undefined)
 	{
