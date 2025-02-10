@@ -7,6 +7,7 @@ Composant permettant de lancer la partie au lancement de la page
 import React from "react";
 import { useState, useEffect } from "react";
 import { creerCompte, connexionCompte, serveurEstOn, autoConnect, deconnexionServeur } from "../scripts/connexionServeur";
+import { debutChargementPage, finChargementPage } from "../scripts/Utile";
 
 
 function StartGame({ handleGameStart, setEstConnecter, setNomUtilisateurFinal, setNbVictoires, setNbDefaites, setMeilleurTemps, nbVictoires, nbDefaites, meilleurTemps }) {
@@ -47,16 +48,21 @@ function StartGame({ handleGameStart, setEstConnecter, setNomUtilisateurFinal, s
     const handleCreerCompte = async (event) => {
         event.preventDefault();
 
+        debutChargementPage()
         if(await creerCompte(nomUtilisateur, mdp))
         {
             setCreationCompte(false);
         }
+        finChargementPage()
+
     }
 
     const handleConnexion = async (event) => {
         event.preventDefault();
 
+        debutChargementPage()
         const resultatConnexion = await connexionCompte(nomUtilisateur, mdp);
+        finChargementPage()
 
         setMdp('');
 
@@ -78,9 +84,9 @@ function StartGame({ handleGameStart, setEstConnecter, setNomUtilisateurFinal, s
         const recevoirDonnees = async () => {
             if (await serveurEstOn() && !estConnecterMenu) {
 
+                debutChargementPage()
                 const resultatConnexion = await autoConnect();
-
-                console.log(resultatConnexion)
+                finChargementPage()
     
                 if (resultatConnexion !== undefined) 
                 {
@@ -109,7 +115,9 @@ function StartGame({ handleGameStart, setEstConnecter, setNomUtilisateurFinal, s
 
     const deconnexion = async () => {
 
+        debutChargementPage()
         await deconnexionServeur(nomUtilisateur);
+        finChargementPage()
 
         setEstConnecter(false);
         setNomUtilisateurFinal("");
@@ -131,7 +139,7 @@ function StartGame({ handleGameStart, setEstConnecter, setNomUtilisateurFinal, s
                         <div id="menuCompte">
                             <p>Nombre de victoires : {nbVictoires}</p>
                             <p>Nombre de défaites : {nbDefaites}</p>
-                            <p>Pourcentage de réussite : {nbDefaites > 0 ? Math.floor((nbVictoires / nbDefaites) * 100) : 100}%</p>
+                            <p>Pourcentage de réussite : {nbDefaites > 0 ? Math.floor((nbVictoires / nbDefaites) * 100) : 0}%</p>
                             <p>Meilleur temps : {meilleurTemps ||= "Non défini"}</p>
                         </div>
                     )}
@@ -158,7 +166,9 @@ function StartGame({ handleGameStart, setEstConnecter, setNomUtilisateurFinal, s
                 </button>
                 <h3>Par Antoine PAUNET</h3>
 
-                <h2 className="creerCompte" id="btnCreerCompte" onClick={() => setCreationCompte(true)}>Créer un compte</h2>
+                {!estConnecterMenu && (
+                    <h2 className="creerCompte" id="btnCreerCompte" onClick={() => setCreationCompte(true)}>Créer un compte</h2>
+                )}
 
                 {!estConnecterMenu && (
                     <h2 className="creerCompte" id="btnCreerCompte" onClick={() => setConnexion(true)}>Se Connecter</h2>

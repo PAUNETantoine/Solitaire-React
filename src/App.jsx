@@ -28,7 +28,8 @@ import NombreDeClics    from "./composants/NombreDeClics";
 
 /*Import des scripts utiles*/
 import gestionClick from "./scripts/ClicGauche";
-import { envoyerPlateauGagnant, recevoirPlateauGagnant, serveurEstOn, ajouterVictoire, ajouterDefaite, autoConnect, recevoirData } from "./scripts/connexionServeur";
+import { envoyerPlateauGagnant, recevoirPlateauGagnant, serveurEstOn, ajouterVictoire, ajouterDefaite, recevoirData } from "./scripts/connexionServeur";
+import { debutChargementPage, finChargementPage } from "./scripts/Utile";
 
 
 function App()
@@ -59,11 +60,11 @@ function App()
         {
             if(plateau === null && estAleatoire !== null && !estAleatoire)
             {
-                document.getElementById("chargementPage").classList.add("chargementPage");
+                debutChargementPage()
                 if(await serveurEstOn())
                 {
                     let tmpP = await recevoirPlateauGagnant();
-                    document.getElementById("chargementPage").classList.remove("chargementPage");
+                    finChargementPage()
 
                     if(tmpP === null)
                     {
@@ -75,7 +76,7 @@ function App()
                         setPlateau(tmpP);
                     }
                 }else{
-                    document.getElementById("chargementPage").classList.remove("chargementPage");
+                    finChargementPage()
                     alert("Serveur déconnecté, lancement de la partie en mode aléatoire.")
                     setEstAleatoire(true);
                     setPlateau(new Plateau());
@@ -329,8 +330,8 @@ function App()
 
     const handleGameRefresh = async () => {
         document.getElementById("zoneGagner").classList.remove("zoneGagner")
-        document.getElementById("chargementPage").classList.add("chargementPage");
         document.getElementById("rangementAuto").classList.add("cacher");
+        debutChargementPage()
 
         if(!gagner && partieLance && estConnecter)
         {
@@ -352,7 +353,7 @@ function App()
 
 
         setTimeout(() => {
-            document.getElementById("chargementPage").classList.remove("chargementPage");
+            finChargementPage();
             setJeuLance(true);
             handleRechargerPage(plateau, true, setGagner);
         }, 1000)

@@ -112,7 +112,13 @@ const copierCartes = (tabDep) => {
 	return tabArr;
 }
 
+const debutChargementPage = () => {
+	document.getElementById("chargementPage").classList.add("chargementPage");
+}
+
+const finChargementPage = () => {
+	document.getElementById("chargementPage").classList.remove("chargementPage");
+}
 
 
-
-export {clicEstDansColonnes, clicEstDansPioche, clicEstDansPile, copierTableauColonnes, copierTableauFin, copierCartes, getIndexColCouleur}
+export {clicEstDansColonnes, clicEstDansPioche, clicEstDansPile, copierTableauColonnes, copierTableauFin, copierCartes, getIndexColCouleur, debutChargementPage, finChargementPage}
