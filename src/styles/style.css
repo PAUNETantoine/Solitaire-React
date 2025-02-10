@@ -109,13 +109,56 @@ Fichier contenant le css nécessaire au bon déroulement du jeu
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    font-family: "Naturaly", sans-serif;
 }
+
+.creerCompte
+{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-size: 30px;
+    color: white;
+}
+
+#btnCreerCompte
+{
+    color: black;
+    text-shadow: 10px black;
+    border: 5px solid green;
+    background-color: green;
+    border-radius: 12%;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+#btnCreerCompte:hover {
+    transform: scale(1.2); /* Agrandit la zone de texte */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Ajoute une ombre pour mettre en valeur */
+}
+
+
+#annuler
+{
+    color: black;
+    text-shadow: 10px black;
+    border: 5px solid green;
+    background-color: green;
+    border-radius: 12%;
+    font-size: 70px;
+    cursor: pointer;
+}
+
+#annuler:hover {
+    transform: scale(1.2); /* Agrandit la zone de texte */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Ajoute une ombre pour mettre en valeur */
+}
+
 
 .zoneLancementJeu h1,h3 {
     color: white;
     font-size: 4rem;
     margin-bottom: 20px;
-    font-family: "Naturaly", sans-serif;
 }
 
 .zoneLancementJeu button {
@@ -252,4 +295,50 @@ Fichier contenant le css nécessaire au bon déroulement du jeu
     font-size: 4rem;
     margin-bottom: 20px;
     font-family: "Naturaly", sans-serif;
+}
+
+#compte {
+    font-family: "Naturaly", sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+
+    position: fixed;
+    top: 0;
+    right: 50px;
+    z-index: 5000;
+    color: white;
+    font-size: 20px;
+}
+
+#iconCompte {
+    border: 5px solid green;
+    border-radius: 100%;
+    padding: 18px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#txtNomUtilisateur {
+    margin-top: 5px;
+    text-align: center;
+}
+
+#menuCompte {
+    background-color: rgba(0, 0, 0, 0.8);
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    position: absolute;
+    top: 100px;
+    right: 0;
+    width: 200px;
+    color: white;
+    text-align: center;
+    z-index: 4999;
 }

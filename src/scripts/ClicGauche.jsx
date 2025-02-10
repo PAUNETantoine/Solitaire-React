@@ -63,7 +63,7 @@ const colonneClick = (x, y, plateau, annulerCoup) => {
 
 	if(plateau.tabColonnes[indexX][indexY] !== undefined && !plateau.tabColonnes[indexX][indexY].getEstRetournee())
 	{
-		return;
+		return false;
 	}
 
 	//Si c'est  de la pioche vers les colonnes

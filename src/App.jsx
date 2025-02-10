@@ -26,10 +26,9 @@ import StartGame        from "./composants/StartGame";
 import AffichageGagner  from "./composants/AffichageGagner";
 import NombreDeClics    from "./composants/NombreDeClics";
 
-
 /*Import des scripts utiles*/
 import gestionClick from "./scripts/ClicGauche";
-import { envoyerPlateauGagnant, recevoirPlateauGagnant, serveurEstOn } from "./scripts/connexionServeur";
+import { envoyerPlateauGagnant, recevoirPlateauGagnant, serveurEstOn, ajouterVictoire, ajouterDefaite, autoConnect } from "./scripts/connexionServeur";
 
 
 function App()
@@ -40,6 +39,17 @@ function App()
     const [jeuLance,         setJeuLance] = useState(false);
     const [gagner,           setGagner  ] = useState(false);
     const [estAleatoire, setEstAleatoire] = useState(null);
+    const [estPause,         setEstPause] = useState(false);
+    const [partieLance,   setPartieLance] = useState(false);
+
+
+    //Etats permetant de gérer les données de connexion
+    const [estConnecter, setEstConnecter] = useState(false);
+    const [nomUtilisateurFinal, setNomUtilisateurFinal] = useState(null);
+    const [nbDefaites, setNbDefaites] = useState(null);
+    const [nbVictoires, setNbVictoires] = useState(null);
+    const [meilleurTemps, setMeilleurTemps] = useState(null);
+    
 
 
     //Les comportements
@@ -83,6 +93,10 @@ function App()
 
 
     useEffect(() => {
+
+    }, [partieLance])
+
+    useEffect(() => {
         if(gagner && jeuLance)
         {
             document.getElementById("rangementAuto").classList.remove("cacher");
@@ -91,6 +105,11 @@ function App()
             if(estAleatoire)
             {
                 envoyerPlateauGagnant(annulerCoup.plateauDepart); //Envoyer au serveur un plateau gagnant
+            }
+
+            if(estConnecter)
+            {
+                ajouterVictoire(nomUtilisateurFinal);
             }
 
         }else{
@@ -116,110 +135,33 @@ function App()
 
         const canvaFrame = document.getElementById("canvaFrame");
 
-
         canvaFrame.addEventListener("mousedown", (event) => {
-            const x = event.offsetX;
-            const y = event.offsetY;
-
-            plateau.sourisClic = true;
-
-            if(gestionClick(x, y, plateau, false, annulerCoup)) //Permet de recharger la page après la modification des valeurs
-            {
-                handleRechargerPage(plateau, jeuLance, setGagner);
-                annulerCoup.ajouterCoup(plateau);
-            }
-            handleRechargerPage(plateau, jeuLance, setGagner);
+            pressionClick(event, canvaFrame);
         });
-
-
-
 
         canvaFrame.addEventListener("mousemove", (event) => {
-            const x = event.offsetX;
-            const y = event.offsetY;
-
-            if(plateau.sourisClic)
-            {
-                if(plateau.getCarteColonneSelectionne() !== null)
-                {
-                    if(plateau.getIndexLigneCarte(plateau.getCarteColonneSelectionne()) !== 0) //Si on prends un paquet de cartes
-                    {
-                        for(let i = plateau.getIndexLigneCarte(plateau.getCarteColonneSelectionne()) ; i >= 0 ; i--)
-                        {
-                            plateau.tabColonnes[plateau.getIndexColonneCarte(plateau.getCarteColonneSelectionne())][i].setX(x - 60);
-                            plateau.tabColonnes[plateau.getIndexColonneCarte(plateau.getCarteColonneSelectionne())][i].setY((y - 100) - (i*30));
-                            plateau.tabColonnes[plateau.getIndexColonneCarte(plateau.getCarteColonneSelectionne())][i].setEstMouvement(true);
-                        }
-                    }else{
-                        plateau.getCarteColonneSelectionne().setEstMouvement(true);
-                        plateau.getCarteColonneSelectionne().setX(x - 60)
-                        plateau.getCarteColonneSelectionne().setY(y - 100)
-                    }
-                }else if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheEstSelectionne())
-                {
-                    plateau.getCartePiocheSelectionne().setEstMouvement(true);
-                    plateau.getCartePiocheSelectionne().setX(x - 60)
-                    plateau.getCartePiocheSelectionne().setY(y - 100)                
-                }else if(plateau.getCarteFinSelectionne() !== null && plateau.getCarteFinSelectionne() !== undefined)
-                {
-                    plateau.getCarteFinSelectionne().setEstMouvement(true);
-                    plateau.getCarteFinSelectionne().setX(x - 60)
-                    plateau.getCarteFinSelectionne().setY(y - 100)       
-                }
-            }else{
-                return;
-            }
-
-            let ctx = canvaFrame.getContext("2d");
-
-            ctx.clearRect(0, 0, canvaFrame.width, canvaFrame.height);
-
-            handleRechargerPage(plateau, jeuLance, setGagner);
+            mouvementClick(event, canvaFrame);
         });
-        
-
         
         // Écouteur pour `mouseup`
         canvaFrame.addEventListener("mouseup", (event) => {
-            const x = event.offsetX;
-            const y = event.offsetY;
-
-            plateau.sourisClic = false;
-
-            //Vérifications
-
-            let estCoupValide = gestionClick(x, y, plateau, true, annulerCoup)
-
-
-            if(plateau.getCarteColonneSelectionne() !== null && plateau.getCarteColonneSelectionne() !== undefined)
-            {
-                plateau.getCarteColonneSelectionne().setEstMouvement(false);
-            }else if(plateau.getCartePiocheEstSelectionne())
-            {
-                plateau.getCartePiocheSelectionne().setEstMouvement(false);
-            }else if(plateau.getCarteFinSelectionne())
-            {
-                plateau.getCarteFinSelectionne().setEstMouvement(false);
-            }
-
-            checkEstMouvement(); //enlève estMouvement
-
-            plateau.setCarteColonneSelectionne(null);
-            plateau.setCarteFinSelectionne(null);
-            plateau.setCartePiocheEstSelectionne(false);
-
-            let ctx = canvaFrame.getContext("2d");
-
-            ctx.clearRect(0, 0, canvaFrame.width, canvaFrame.height);
-
-            if(estCoupValide)
-            {
-                handleRechargerPage(plateau, jeuLance, setGagner);
-                annulerCoup.ajouterCoup(plateau)
-            }
-            handleRechargerPage(plateau, jeuLance, setGagner);
+            relacherClick(event, canvaFrame);
         });
 
+
+        //pour les téléphones : 
+
+        canvaFrame.addEventListener("touchStart", (event) => {
+            pressionClick(event, canvaFrame);
+        })
+
+        canvaFrame.addEventListener("touchMove", (event) => {
+            mouvementClick(event, canvaFrame);
+        })
+
+        canvaFrame.addEventListener("touchEnd", (event) => {
+            relacherClick(event, canvaFrame);
+        })
       
     }, [plateau]);
 
@@ -246,14 +188,140 @@ function App()
     }
 
 
-    const handleGameStart = (estAleatoire) => {
+    const pressionClick = (event, canvaFrame) => {
+        const x = event.offsetX;
+        const y = event.offsetY;
+
+        plateau.sourisClic = true;
+
+        if(gestionClick(x, y, plateau, false, annulerCoup)) //Permet de recharger la page après la modification des valeurs
+        {
+            if(!partieLance && jeuLance)
+            {
+                setPartieLance(true);
+            }
+            handleRechargerPage(plateau, jeuLance, setGagner);
+            annulerCoup.ajouterCoup(plateau);
+        }
+        handleRechargerPage(plateau, jeuLance, setGagner);
+    }
+
+
+    const mouvementClick = (event, canvaFrame) => {
+        const x = event.offsetX;
+        const y = event.offsetY;
+
+        if(plateau.sourisClic)
+        {
+            if(plateau.getCarteColonneSelectionne() !== null)
+            {
+                if(plateau.getIndexLigneCarte(plateau.getCarteColonneSelectionne()) !== 0) //Si on prends un paquet de cartes
+                {
+                    for(let i = plateau.getIndexLigneCarte(plateau.getCarteColonneSelectionne()) ; i >= 0 ; i--)
+                    {
+                        plateau.tabColonnes[plateau.getIndexColonneCarte(plateau.getCarteColonneSelectionne())][i].setX(x - 60);
+                        plateau.tabColonnes[plateau.getIndexColonneCarte(plateau.getCarteColonneSelectionne())][i].setY((y - 100) - (i*30));
+                        plateau.tabColonnes[plateau.getIndexColonneCarte(plateau.getCarteColonneSelectionne())][i].setEstMouvement(true);
+                    }
+                }else{
+                    plateau.getCarteColonneSelectionne().setEstMouvement(true);
+                    plateau.getCarteColonneSelectionne().setX(x - 60)
+                    plateau.getCarteColonneSelectionne().setY(y - 100)
+                }
+            }else if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheEstSelectionne())
+            {
+                plateau.getCartePiocheSelectionne().setEstMouvement(true);
+                plateau.getCartePiocheSelectionne().setX(x - 60)
+                plateau.getCartePiocheSelectionne().setY(y - 100)                
+            }else if(plateau.getCarteFinSelectionne() !== null && plateau.getCarteFinSelectionne() !== undefined)
+            {
+                plateau.getCarteFinSelectionne().setEstMouvement(true);
+                plateau.getCarteFinSelectionne().setX(x - 60)
+                plateau.getCarteFinSelectionne().setY(y - 100)       
+            }
+        }else{
+            return;
+        }
+
+        let ctx = canvaFrame.getContext("2d");
+
+        ctx.clearRect(0, 0, canvaFrame.width, canvaFrame.height);
+
+        handleRechargerPage(plateau, jeuLance, setGagner);
+    }
+
+
+    const relacherClick = (event, canvaFrame) => {
+        const x = event.offsetX;
+        const y = event.offsetY;
+
+        plateau.sourisClic = false;
+
+        //Vérifications
+
+        let estCoupValide = gestionClick(x, y, plateau, true, annulerCoup)
+
+
+        if(plateau.getCarteColonneSelectionne() !== null && plateau.getCarteColonneSelectionne() !== undefined)
+        {
+            plateau.getCarteColonneSelectionne().setEstMouvement(false);
+        }else if(plateau.getCartePiocheEstSelectionne())
+        {
+            plateau.getCartePiocheSelectionne().setEstMouvement(false);
+        }else if(plateau.getCarteFinSelectionne())
+        {
+            plateau.getCarteFinSelectionne().setEstMouvement(false);
+        }
+
+        checkEstMouvement(); //enlève estMouvement
+
+        plateau.setCarteColonneSelectionne(null);
+        plateau.setCarteFinSelectionne(null);
+        plateau.setCartePiocheEstSelectionne(false);
+
+        let ctx = canvaFrame.getContext("2d");
+
+        ctx.clearRect(0, 0, canvaFrame.width, canvaFrame.height);
+
+        if(estCoupValide)
+        {
+            if(!partieLance && jeuLance)
+            {
+                setPartieLance(true);
+            }
+            handleRechargerPage(plateau, jeuLance, setGagner);
+            annulerCoup.ajouterCoup(plateau)
+        }
+        handleRechargerPage(plateau, jeuLance, setGagner);
+    }
+
+
+    const handleGameStart = (estAleatoireParam) => {
         document.getElementById('zoneLancementJeu').classList.add('cacher');
 
         if(!jeuLance)
         {
             setJeuLance(true);
-            setEstAleatoire(estAleatoire);
+            setEstAleatoire(estAleatoireParam);
         }
+
+        if(jeuLance)
+        {
+            setEstPause(false)
+            if(estAleatoireParam !== estAleatoire)
+            {
+                setEstAleatoire(estAleatoireParam);
+                handleGameRefresh()
+            }
+        }
+    }
+
+
+    const handlePause = () => {
+
+        document.getElementById('zoneLancementJeu').classList.toggle('cacher');
+
+        setEstPause(true);
     }
 
 
@@ -262,6 +330,12 @@ function App()
         document.getElementById("chargementPage").classList.add("chargementPage");
         document.getElementById("rangementAuto").classList.add("cacher");
 
+        if(!gagner && partieLance && estConnecter)
+        {
+            ajouterDefaite(nomUtilisateurFinal);
+        }
+
+        setPartieLance(false);
         setJeuLance(false);
         setGagner(false);
 
@@ -308,11 +382,24 @@ function App()
     return (
         <div className="BackGround">
             <CanvaFrame handleClicDroit={handleClicDroit}></CanvaFrame>
-            <BoutonsDiv handleGameRefresh={handleGameRefresh} handleAutoStore={handleAutoStore} handleRetourArriere={handleRetourArriere}></BoutonsDiv>
-            <StartGame handleGameStart={handleGameStart}></StartGame>
-            <Chronometre jeuLance={jeuLance} gagner={gagner}></Chronometre>
+            <BoutonsDiv handleGameRefresh={handleGameRefresh} handleAutoStore={handleAutoStore} handleRetourArriere={handleRetourArriere} handlePause={handlePause}></BoutonsDiv>
+
+            <StartGame handleGameStart={handleGameStart} 
+                setEstConnecter={setEstConnecter}
+                setNomUtilisateurFinal={setNomUtilisateurFinal}
+                setNbVictoires={setNbVictoires}
+                setNbDefaites={setNbDefaites}
+                setMeilleurTemps={setMeilleurTemps}
+                nbVictoires={nbVictoires}
+                nbDefaites={nbDefaites}
+                meilleurTemps={meilleurTemps}
+                estPause={estPause}
+                >
+            </StartGame>
+
+            <Chronometre partieLance={partieLance} gagner={gagner}></Chronometre>
             <ChargementPage></ChargementPage>
-            <AffichageGagner handleGameRefresh={handleGameRefresh}></AffichageGagner>
+            <AffichageGagner handleGameRefresh={handleGameRefresh} estConnecte={estConnecter} nbVictoires={nbVictoires} nbDefaites={nbDefaites} meilleurTemps={meilleurTemps}></AffichageGagner>
             <NombreDeClics nbClics={annulerCoup}></NombreDeClics>
         </div>
     )
