@@ -84,6 +84,8 @@ const handleDeplacerCarte = async(carteDep, carteArr, location, plateau) => {
 			return false;
 		}
 
+		console.log(carteArr)
+
 
 		plateau.tabFin[carteArr].unshift(carteDep); 
 		plateau.tabFin[carteArr][0].setEstRetournee(true);

@@ -28,7 +28,7 @@ import NombreDeClics    from "./composants/NombreDeClics";
 
 /*Import des scripts utiles*/
 import gestionClick from "./scripts/ClicGauche";
-import { envoyerPlateauGagnant, recevoirPlateauGagnant, serveurEstOn, ajouterVictoire, ajouterDefaite, autoConnect } from "./scripts/connexionServeur";
+import { envoyerPlateauGagnant, recevoirPlateauGagnant, serveurEstOn, ajouterVictoire, ajouterDefaite, autoConnect, recevoirData } from "./scripts/connexionServeur";
 
 
 function App()
@@ -49,6 +49,7 @@ function App()
     const [nbDefaites, setNbDefaites] = useState(null);
     const [nbVictoires, setNbVictoires] = useState(null);
     const [meilleurTemps, setMeilleurTemps] = useState(null);
+    const [victoireAjoutee, setVictoireAjoutee] = useState(false);
     
 
 
@@ -97,7 +98,7 @@ function App()
     }, [partieLance])
 
     useEffect(() => {
-        if(gagner && jeuLance)
+        if(gagner && jeuLance && partieLance)
         {
             document.getElementById("rangementAuto").classList.remove("cacher");
             document.getElementById("rangementAuto").classList.add("boutons");
@@ -107,9 +108,10 @@ function App()
                 envoyerPlateauGagnant(annulerCoup.plateauDepart); //Envoyer au serveur un plateau gagnant
             }
 
-            if(estConnecter)
+            if(estConnecter && !victoireAjoutee)
             {
                 ajouterVictoire(nomUtilisateurFinal);
+                setVictoireAjoutee(true);
             }
 
         }else{
@@ -332,12 +334,19 @@ function App()
 
         if(!gagner && partieLance && estConnecter)
         {
-            ajouterDefaite(nomUtilisateurFinal);
+            await ajouterDefaite(nomUtilisateurFinal);
         }
+
+        const donnees = await recevoirData(nomUtilisateurFinal);
+
+        setNbDefaites(donnees[2])
+        setNbVictoires(donnees[1])
+        setMeilleurTemps(donnees[3]);
 
         setPartieLance(false);
         setJeuLance(false);
         setGagner(false);
+
 
         rechargerJeu(plateau, estAleatoire);
 

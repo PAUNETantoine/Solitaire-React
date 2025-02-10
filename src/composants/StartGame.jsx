@@ -131,7 +131,7 @@ function StartGame({ handleGameStart, setEstConnecter, setNomUtilisateurFinal, s
                         <div id="menuCompte">
                             <p>Nombre de victoires : {nbVictoires}</p>
                             <p>Nombre de défaites : {nbDefaites}</p>
-                            <p>Pourcentage de réussite : {nbDefaites > 0 ? (nbVictoires / nbDefaites) * 100 : "100"}%</p>
+                            <p>Pourcentage de réussite : {nbDefaites > 0 ? Math.floor((nbVictoires / nbDefaites) * 100) : 100}%</p>
                             <p>Meilleur temps : {meilleurTemps ||= "Non défini"}</p>
                         </div>
                     )}

@@ -35,6 +35,22 @@ const clicEstDansPile = (x,y) => {
 }
 
 
+//On chercher quelle colonne est utilisée pour la couleur selon l'AS
+const getIndexColCouleur = (carte, plateau) => {
+	let indexColoCouleur;
+
+	for(let i = 0 ; i < plateau.tabFin.length ; i++)
+	{
+		if((plateau.tabFin[i][0] === undefined && carte.getNombre() === 1) || (carte !== undefined && plateau.tabFin[i][0] && plateau.tabFin[i][0].getForme() === carte.getForme()))
+		{
+			indexColoCouleur = i;
+		}
+	}
+
+	return indexColoCouleur;
+} 
+
+
 const copierTableauColonnes = (tabDep, tabArrivee) => {
 
 	const tabArr = [[],[],[],[],[],[],[]];
@@ -99,4 +115,4 @@ const copierCartes = (tabDep) => {
 
 
 
-export {clicEstDansColonnes, clicEstDansPioche, clicEstDansPile, copierTableauColonnes, copierTableauFin, copierCartes}
+export {clicEstDansColonnes, clicEstDansPioche, clicEstDansPile, copierTableauColonnes, copierTableauFin, copierCartes, getIndexColCouleur}

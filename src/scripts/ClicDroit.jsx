@@ -7,7 +7,7 @@ Script permettant de gérer les clis droits sur le canva
 */
 
 import handleDeplacerCarte 						    from "./deplacerCarte";
-import { clicEstDansColonnes, clicEstDansPioche } 	from "./Utile";
+import { clicEstDansColonnes, clicEstDansPioche, getIndexColCouleur } 	from "./Utile";
 
 const clicDroit = (event, plateau, annulerCoup) => {
 	event.preventDefault();
@@ -51,22 +51,6 @@ const clicDroit = (event, plateau, annulerCoup) => {
 	}
 	return res;
 }
-
-
-//On chercher quelle colonne est utilisée pour la couleur selon l'AS
-const getIndexColCouleur = (carte, plateau) => {
-	let indexColoCouleur;
-
-	for(let i = 0 ; i < plateau.tabFin.length ; i++)
-	{
-		if((plateau.tabFin[i][0] === undefined && carte.getNombre() === 1) || (carte !== undefined && plateau.tabFin[i][0] && plateau.tabFin[i][0].getForme() === carte.getForme()))
-		{
-			indexColoCouleur = i;
-		}
-	}
-
-	return indexColoCouleur;
-} 
 
 
 export default clicDroit;

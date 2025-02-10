@@ -10,6 +10,7 @@ Script permetant de gérer le tri automatique en fin de partie
 
 import handleDeplacerCarte from "./deplacerCarte";
 import handleRechargerPage from "./rechargerPage";
+import { getIndexColCouleur } from "./Utile";
 
 
 const triAutomatique = async (plateau, setGagner) => 
@@ -24,30 +25,27 @@ const triAutomatique = async (plateau, setGagner) =>
 				{
 					if(plateau.cartes.length > 0 || plateau.getCartePiocheSelectionne() !== null)
 					{
-						console.log(plateau.getCartePiocheSelectionne())
-						if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && plateau.getCartePiocheSelectionne().getForme() === plateau.tabFin[j][0].getForme() && plateau.getCartePiocheSelectionne().getNombre() === plateau.tabFin[j][0].getNombre() + 1)
+						if(await handleDeplacerCarte(plateau.getCartePiocheSelectionne(), getIndexColCouleur(plateau.getCartePiocheSelectionne(), plateau), "FIN-PIOCHE", plateau))
 						{
-							await handleDeplacerCarte(plateau.getCartePiocheSelectionne(), j, "FIN-PIOCHE", plateau);
 							await new Promise(resolve => {
 								setTimeout(() => {
 									resolve();
-								}, 300);
+								}, 100);
 							});
 						}else{
-							console.log(plateau.cartes)
 							plateau.cartes.push(plateau.getCartePiocheSelectionne());
 							plateau.setCartePiocheSelectionne(plateau.cartes.shift());
 						}
 					}
 	
 	
-					if(plateau.tabColonnes[i][0] !== undefined && plateau.tabFin[j][0] !== undefined && plateau.tabColonnes[i][0].getForme() === plateau.tabFin[j][0].getForme() && plateau.tabColonnes[i][0].getNombre() === plateau.tabFin[j][0].getNombre() + 1)
+					if(plateau.tabColonnes[i][0] !== undefined && plateau.tabFin[j][0] !== undefined)
 					{
-						await handleDeplacerCarte(plateau.tabColonnes[i][0], j, "FIN-COLONNE", plateau);
+						await handleDeplacerCarte(plateau.tabColonnes[i][0], getIndexColCouleur(plateau.tabColonnes[i][0], plateau), "FIN-COLONNE", plateau);
 						await new Promise(resolve => {
 							setTimeout(() => {
 								  resolve();
-							}, 300);
+							}, 100);
 						})
 					}else{
 						if(plateau.tabFin[j][0] === undefined)
@@ -58,26 +56,31 @@ const triAutomatique = async (plateau, setGagner) =>
 							{
 								if(plateau.tabColonnes[v][0].getNombre() === 1)
 								{
-									await handleDeplacerCarte(plateau.tabColonnes[i][0], j, "FIN-COLONNE", plateau);
+									await handleDeplacerCarte(plateau.tabColonnes[i][0], getIndexColCouleur(plateau.tabColonnes[i][0], plateau), "FIN-COLONNE", plateau);
 									await new Promise(resolve => {
 										setTimeout(() => {
 											  resolve();
-										}, 300);
+										}, 100);
 									});
 								}else{
 									if(plateau.cartes.length > 0 || plateau.getCartePiocheSelectionne() !== null)
 									{
 										if(plateau.getCartePiocheSelectionne() !== null && plateau.getCartePiocheSelectionne() !== undefined && plateau.getCartePiocheSelectionne().getNombre() === 1)
 										{
-											await handleDeplacerCarte(plateau.getCartePiocheSelectionne(), j, "FIN-PIOCHE", plateau);
+											await handleDeplacerCarte(plateau.getCartePiocheSelectionne(), getIndexColCouleur(plateau.getCartePiocheSelectionne(), plateau), "FIN-PIOCHE", plateau);
 											await new Promise(resolve => {
 												setTimeout(() => {
 													resolve();
-												}, 300);
+												}, 100);
 											});
 										}else{
 											plateau.cartes.push(plateau.getCartePiocheSelectionne());
 											plateau.setCartePiocheSelectionne(plateau.cartes.shift());
+											await new Promise(resolve => {
+												setTimeout(() => {
+													resolve();
+												}, 100);
+											});
 										}
 									}
 								}

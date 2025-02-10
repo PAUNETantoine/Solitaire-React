@@ -60,6 +60,44 @@ const autoConnect = async() => {
 }
 
 
+const recevoirData = async (nomUtilisateur) => {
+	const servOn = await serveurEstOn();
+
+	if(!servOn)
+	{
+		alert("Le serveur est hors ligne, veuillez ressayer plus tard...")
+		return [false];
+	}
+
+	try {
+		const response = await fetch(ip + '/api/recevoirData', {
+		  method: 'POST',
+		  headers: { 'Content-Type': 'application/json' },
+		  body: JSON.stringify({ nomUtilisateur }),
+		});
+  
+		const data = await response.json();
+
+		if (response.status === 200) {
+
+		  console.log(data.message);
+
+		  const res = [true, data.stats.nbVictoires, data.stats.nbDefaites, data.stats.meilleurTemps];
+
+		  return res;
+		} else {
+		  	alert(data.error);
+			return [false];
+		}
+
+	} catch (err) {
+		alert('Erreur serveur');
+		return [false];
+	}
+
+}
+
+
 const connexionCompte = async (nomUtilisateur, mdp) => {
 	const servOn = await serveurEstOn();
 
@@ -262,4 +300,4 @@ const recevoirPlateauGagnant = async () => {
 }
 
 
-export {envoyerPlateauGagnant, recevoirPlateauGagnant, serveurEstOn, creerCompte, connexionCompte, ajouterDefaite, ajouterVictoire, autoConnect, deconnexionServeur}
+export {envoyerPlateauGagnant, recevoirPlateauGagnant, serveurEstOn, creerCompte, connexionCompte, ajouterDefaite, ajouterVictoire, autoConnect, deconnexionServeur, recevoirData}

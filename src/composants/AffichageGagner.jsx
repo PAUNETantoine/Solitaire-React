@@ -10,14 +10,15 @@ function AffichageGagner({handleGameRefresh, estConnecte, nbVictoires, nbDefaite
     return (
         <div id="zoneGagner" className="cacher">
             <img src={process.env.PUBLIC_URL + '/images/feu d artifice.gif'}></img>
-            <p>Vous avez gagné !</p>
+            <p className="titreZoneGagner">Vous avez gagné !</p>
             <p id="tpsFin"></p>
             <p id="nbCoups"></p>
             {estConnecte && (
-                <div>
-                    <p>Nombre de victoires : {nbVictoires}</p>
+                <div id="datasZoneGagner">
+                    <p className="titreZoneGagner">Vos statistiques :</p>
+                    <p>Nombre de victoires : {nbVictoires+1}</p>
                     <p>Nombre de défaites : {nbDefaites}</p>
-                    <p>Ratio Victoires / Défaites : {nbVictoires/nbDefaites * 100}</p>
+                    <p>Ratio Victoires / Défaites : {(nbVictoires+1)/nbDefaites * 100}%</p>
                     <p>Meilleur Temps : 'En développement'</p>
                 </div>
             )}
