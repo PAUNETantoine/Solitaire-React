@@ -16,9 +16,9 @@ function AffichageGagner({handleGameRefresh, estConnecte, nbVictoires, nbDefaite
             {estConnecte && (
                 <div id="datasZoneGagner">
                     <p className="titreZoneGagner">Vos statistiques :</p>
-                    <p>Nombre de victoires : {nbVictoires+1}</p>
-                    <p>Nombre de défaites : {nbDefaites}</p>
-                    <p>Ratio Victoires / Défaites : {(nbVictoires+1)/nbDefaites * 100}%</p>
+                    <p>Nombre de victoire : {nbVictoires+1}</p>
+                    <p>Nombre de défaite : {nbDefaites}</p>
+                    <p>Ratio Victoires / Défaites : {nbDefaites > 0 ? Math.floor(((nbVictoires + 1) / nbDefaites) * 100) : 100}%</p>
                     <p>Meilleur Temps : 'En développement'</p>
                 </div>
             )}

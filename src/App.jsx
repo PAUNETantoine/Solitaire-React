@@ -42,6 +42,9 @@ function App()
     const [estAleatoire, setEstAleatoire] = useState(null);
     const [estPause,         setEstPause] = useState(false);
     const [partieLance,   setPartieLance] = useState(false);
+    
+
+    const [estMobile, setEstMobile] = useState(false);
 
 
     //Etats permetant de gérer les données de connexion
@@ -92,6 +95,27 @@ function App()
 
         creerPlateau();
     }, [jeuLance, estAleatoire]);
+
+
+    useEffect(() => {
+        const estSurMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        setEstMobile(estSurMobile);
+    
+        if (estSurMobile) {
+            const meta = document.createElement("meta");
+            meta.name = "viewport";
+            meta.content = "width=1024"; // Force l'affichage comme un écran de 1024px de large
+            document.head.appendChild(meta);
+
+            document.getElementById("zoneBoutons").classList.add("modeTelephoneBtns")
+            document.getElementById("zoneBoutons").classList.remove("zoneBoutons")
+
+        } else {
+            console.log("L'utilisateur est sur PC");
+        }
+    }, [estMobile])
+
 
 
     useEffect(() => {
@@ -154,16 +178,18 @@ function App()
 
         //pour les téléphones : 
 
-        canvaFrame.addEventListener("touchStart", (event) => {
-            pressionClick(event, canvaFrame);
+        canvaFrame.addEventListener("touchstart", (event) => {
+            pressionClick(event, canvaFrame, "Telephone");
         })
 
-        canvaFrame.addEventListener("touchMove", (event) => {
-            mouvementClick(event, canvaFrame);
+        canvaFrame.addEventListener("touchmove", (event) => {
+            event.preventDefault();
+            mouvementClick(event, canvaFrame, "Telephone");
         })
 
-        canvaFrame.addEventListener("touchEnd", (event) => {
-            relacherClick(event, canvaFrame);
+        canvaFrame.addEventListener("touchend", (event) => {
+            event.preventDefault();
+            relacherClick(event, canvaFrame, "Telephone");
         })
       
     }, [plateau]);
@@ -191,9 +217,16 @@ function App()
     }
 
 
-    const pressionClick = (event, canvaFrame) => {
-        const x = event.offsetX;
-        const y = event.offsetY;
+    const pressionClick = (event, canvaFrame, typeClient) => {
+        let x = event.offsetX;
+        let y = event.offsetY;
+
+        if(typeClient === "Telephone")
+        {
+            let coordonnees = event.touches[0];
+            x = Math.floor(coordonnees.clientX);
+            y = Math.floor(coordonnees.clientY);
+        }
 
         plateau.sourisClic = true;
 
@@ -210,9 +243,18 @@ function App()
     }
 
 
-    const mouvementClick = (event, canvaFrame) => {
-        const x = event.offsetX;
-        const y = event.offsetY;
+    const mouvementClick = (event, canvaFrame, typeClient) => {
+
+        let x = event.offsetX;
+        let y = event.offsetY;
+
+        if(typeClient === "Telephone")
+        {
+            let coordonnees = event.touches[0];
+            x = Math.floor(coordonnees.clientX);
+            y = Math.floor(coordonnees.clientY);
+        }
+            
 
         if(plateau.sourisClic)
         {
@@ -254,9 +296,16 @@ function App()
     }
 
 
-    const relacherClick = (event, canvaFrame) => {
-        const x = event.offsetX;
-        const y = event.offsetY;
+    const relacherClick = (event, canvaFrame, typeClient) => {
+        let x = event.offsetX;
+        let y = event.offsetY;
+
+        if(typeClient === "Telephone")
+        {
+            let coordonnees = event.changedTouches[0];
+            x = Math.floor(coordonnees.clientX);
+            y = Math.floor(coordonnees.clientY);
+        }
 
         plateau.sourisClic = false;
 
@@ -386,7 +435,8 @@ function App()
     //Mise en place de l'icon
     let icon = document.getElementById("icon");
     icon.href = process.env.PUBLIC_URL + '/images/logo.png';
-    
+
+        
     
     //Le rendu
     return (
